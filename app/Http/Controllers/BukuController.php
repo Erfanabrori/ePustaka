@@ -79,4 +79,18 @@ class BukuController extends Controller
         Buku::findOrFail($id)->delete();
         return redirect('/buku');
     }
+
+    // CETAK BARCODE SATU BUKU
+    public function cetakBarcode($id)
+    {
+        $buku = Buku::findOrFail($id);
+        return view('admin.barcode', compact('buku'));
+    }
+
+    // CETAK SEMUA BARCODE
+    public function cetakSemuaBarcode()
+    {
+        $buku = Buku::all();
+        return view('admin.barcode_semua', compact('buku'));
+    }
 }

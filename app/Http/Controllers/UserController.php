@@ -59,4 +59,18 @@ class UserController extends Controller
         User::findOrFail($id)->delete();
         return redirect('/user');
     }
+
+    // CETAK KARTU ANGGOTA SATU
+    public function cetakKartu($id)
+    {
+        $user = User::findOrFail($id);
+        return view('admin.kartu_anggota', compact('user'));
+    }
+
+    // CETAK SEMUA KARTU ANGGOTA
+    public function cetakSemuaKartu()
+    {
+        $data = User::where('role', 'user')->get();
+        return view('admin.kartu_semua', compact('data'));
+    }
 }

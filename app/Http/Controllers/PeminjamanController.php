@@ -20,9 +20,9 @@ class PeminjamanController extends Controller
         }
 
         if ($role == 'admin') {
-            $data = Peminjaman::with('itemBuku', 'user')->get();
+            $data = Peminjaman::with('Buku', 'user')->get();
         } else {
-            $data = Peminjaman::with('itemBuku')
+            $data = Peminjaman::with('Buku')
                 ->where('user_id', $user->id)
                 ->get();
         }
@@ -35,7 +35,7 @@ class PeminjamanController extends Controller
     {
         $buku = Buku::all();
 
-        $selected = $request->item_buku_id;
+        $selected = $request->buku_id;
 
         return view('peminjaman.tambah', compact('buku', 'selected'));
     }
@@ -44,12 +44,12 @@ class PeminjamanController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'item_buku_id' => 'required|exists:item_buku,id',
+            'buku_id' => 'required|exists:buku,id',
         ]);
 
         Peminjaman::create([
             'user_id' => session('user_id'),
-            'item_buku_id' => $request->item_buku_id,
+            'buku_id' => $request->buku_id,
             'tanggal_pinjam' => now()
         ]);
 
@@ -82,11 +82,46 @@ class PeminjamanController extends Controller
     {
         $user = User::find(session('user_id'));
 
-        $riwayat = Peminjaman::with('itemBuku')
+        $riwayat = Peminjaman::with('Buku')
             ->where('user_id', $user->id)
             ->orderBy('created_at', 'desc')
             ->get();
 
         return view('user.riwayat', compact('riwayat', 'user'));
+    }
+
+    // LAPORAN TRANSAKSI ADMIN
+    public function laporan(Request $request)
+    {
+        $query = Peminjaman::with('Buku', 'user');
+
+        if ($request->bulan) {
+            $query->whereMonth('tanggal_pinjam', $request->bulan);
+        }
+        if ($request->tahun) {
+            $query->whereYear('tanggal_pinjam', $request->tahun);
+        }
+
+        $data = $query->orderBy('tanggal_pinjam', 'desc')->get();
+        $users = User::where('role', 'user')->get();
+
+        return view('admin.laporan', compact('data', 'users'));
+    }
+
+    // CETAK LAPORAN
+    public function cetakLaporan(Request $request)
+    {
+        $query = Peminjaman::with('Buku', 'user');
+
+        if ($request->bulan) {
+            $query->whereMonth('tanggal_pinjam', $request->bulan);
+        }
+        if ($request->tahun) {
+            $query->whereYear('tanggal_pinjam', $request->tahun);
+        }
+
+        $data = $query->orderBy('tanggal_pinjam', 'desc')->get();
+
+        return view('admin.laporan_cetak', compact('data'));
     }
 }

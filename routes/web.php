@@ -31,6 +31,8 @@ Route::middleware(['cek.login'])->group(function () {
     Route::get('/buku/edit/{id}', [BukuController::class, 'edit']);
     Route::put('/buku/update/{id}', [BukuController::class, 'update']);
     Route::get('/buku/hapus/{id}', [BukuController::class, 'destroy']);
+    Route::get('/buku/cetak/{id}', [BukuController::class, 'cetakBarcode']);
+    Route::get('/buku/cetak-semua', [BukuController::class, 'cetakSemuaBarcode']);
 });
 
     Route::get('/peminjaman', [PeminjamanController::class, 'index']);
@@ -87,5 +89,9 @@ Route::middleware(['cek.login', 'cek.role'])->group(function () {
     Route::get('/user/edit/{id}', [UserController::class, 'edit']);
     Route::post('/user/update/{id}', [UserController::class, 'update']);
     Route::get('/user/hapus/{id}', [UserController::class, 'destroy']);
+    Route::get('/user/cetak/{id}', [UserController::class, 'cetakKartu']);
+    Route::get('/user/cetak-semua', [UserController::class, 'cetakSemuaKartu']);
+    Route::get('/laporan', [PeminjamanController::class, 'laporan']);
+    Route::get('/laporan/cetak', [PeminjamanController::class, 'cetakLaporan']);
 
 });

@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\ItemBuku;
+use App\Models\Buku;
 use App\Models\User;
 
 class Peminjaman extends Model
@@ -12,15 +12,15 @@ class Peminjaman extends Model
 
     protected $fillable = [
         'user_id',
-        'item_buku_id',
+        'buku_id',
         'tanggal_pinjam',
         'tanggal_kembali'
     ];
 
     // RELASI ITEM BUKU (INI WAJIB SAMA DENGAN WITH DI CONTROLLER)
-    public function itemBuku()
+    public function Buku()
     {
-        return $this->belongsTo(ItemBuku::class, 'item_buku_id');
+        return $this->belongsTo(Buku::class, 'buku_id');
     }
 
     // RELASI USER

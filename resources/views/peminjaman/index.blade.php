@@ -119,7 +119,7 @@
                             <td>{{ $d->user->name }}</td>
                         @endif
 
-                        <td>{{ $d->itemBuku->judul_buku ?? '-' }}</td>
+                        <td>{{ $d->Buku->judul_buku ?? '-' }}</td>
                         <td>{{ \Carbon\Carbon::parse($d->tanggal_pinjam)->format('d-m-Y') }}</td>
 
                         <td>

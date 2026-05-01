@@ -86,7 +86,10 @@
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4 fade-in">
         <h2 class="fw-bold" style="color: var(--primary)">👤 Data Pengguna</h2>
-        <a href="/user/tambah" class="btn-primary-custom">+ Tambah Pengguna</a>
+        <div class="d-flex gap-2">
+            <a href="/user/cetak-semua" class="btn-primary-custom" target="_blank">Cetak Semua Kartu</a>
+            <a href="/user/tambah" class="btn-primary-custom">+ Tambah Pengguna</a>
+        </div>
     </div>
 
     <!-- Table -->
@@ -111,6 +114,7 @@
                                onclick="return confirm('Yakin hapus data?')">
                                 Hapus
                             </a>
+                            <a href="/user/cetak/{{ $d->id }}" class="btn-primary-custom" target="_blank">Kartu</a>
                         </td>
                     </tr>
                 @endforeach

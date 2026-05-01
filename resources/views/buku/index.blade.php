@@ -100,6 +100,7 @@
 
                 @if ($role === 'admin')
                     <a href="/buku/tambah" class="btn-primary-custom">+ Tambah Buku</a>
+                    <a href="/buku/cetak-semua" class="btn-primary-custom" target="_blank">Cetak Barcode</a>
                 @endif
             </form>
         </div>
@@ -144,6 +145,7 @@
                                         onclick="return confirm('Yakin hapus data?')">
                                         Hapus
                                     </a>
+                                    <a href="/buku/cetak/{{ $b->id }}" class="btn-primary-custom" target="_blank">Barcode</a>
                                 @else
                                     <a href="/peminjaman/tambah?buku_id={{ $b->id }}"
                                         class="btn-primary-custom">

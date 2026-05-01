@@ -107,6 +107,7 @@
         @if ($user && $user->role == 'admin')
             <a href="/user">Data Pengguna</a>
             <a href="/buku">Data Buku</a>
+            <a href="/laporan">Laporan Transaksi</a>
         @else
             <a href="/buku">Daftar Buku</a>
         @endif

@@ -50,7 +50,7 @@
 <div class="container">
 
     <div class="mb-4">
-        <h2 class="fw-bold" style="color: var(--primary)">➕ Tambah User</h2>
+        <h2 class="fw-bold" style="color: var(--primary)">➕ Tambah Pengguna</h2>
     </div>
 
     <div class="card-modern">
