@@ -43,6 +43,17 @@ class PeminjamanController extends Controller
             'buku_id' => 'required|exists:buku,id',
         ]);
 
+        $buku = Buku::findOrFail($request->buku_id);
+
+        // 🔥 CEK STOK
+        if ($buku->stok <= 0) {
+            return back()->with('error', 'Stok buku habis');
+        }
+
+        // 🔥 KURANGI STOK
+        $buku->decrement('stok');
+
+        // 🔥 SIMPAN PEMINJAMAN
         Peminjaman::create([
             'user_id' => session('user_id'),
             'buku_id' => $request->buku_id,
@@ -65,6 +76,18 @@ class PeminjamanController extends Controller
             abort(403);
         }
 
+        // 🔥 CEK JANGAN DOUBLE KEMBALI
+        if ($data->tanggal_kembali) {
+            return back()->with('error', 'Buku sudah dikembalikan');
+        }
+
+        // 🔥 TAMBAH STOK
+        $buku = Buku::find($data->buku_id);
+        if ($buku) {
+            $buku->increment('stok');
+        }
+
+        // 🔥 UPDATE STATUS KEMBALI
         $data->update([
             'tanggal_kembali' => now()
         ]);
