@@ -14,11 +14,22 @@
     }
 
     .card-modern {
-        background: #ffffff;
-        border-radius: 20px;
+        background: #fff;
+        border-radius: 18px;
         padding: 25px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-        transition: 0.3s;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .label {
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 5px;
+        display: block;
+        color: #555;
     }
 
     .input-modern {
@@ -26,57 +37,128 @@
         padding: 10px 14px;
         border-radius: 10px;
         border: 1px solid #ddd;
-        margin-bottom: 15px;
+        font-size: 14px;
+    }
+
+    .input-modern:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 2px rgba(47,75,143,0.1);
+    }
+
+    .btn-custom {
+        padding: 10px 18px;
+        border-radius: 10px;
+        font-size: 14px;
+        border: none;
+        text-decoration: none;
     }
 
     .btn-primary-custom {
         background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 10px;
+        color: #fff;
     }
 
     .btn-secondary-custom {
         background: #6b7280;
-        color: white;
-        padding: 10px 20px;
-        border-radius: 10px;
-        text-decoration: none;
-        margin-left: 10px;
+        color: #fff;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    .full {
+        grid-column: span 2;
     }
 </style>
 
 <div class="container">
 
+    <!-- HEADER -->
     <div class="mb-4">
-        <h2 class="fw-bold" style="color: var(--primary)">➕ Tambah Buku</h2>
+        <h3 class="fw-bold" style="color: var(--primary)">
+            ➕ Tambah Buku
+        </h3>
     </div>
 
+    <!-- FORM -->
     <div class="card-modern">
         <form method="POST" action="/buku/simpan">
             @csrf
 
+            <div class="form-grid">
 
-            <input name="judul_buku" class="input-modern" placeholder="Judul Buku" required>
-            <input name="sub_judul" class="input-modern" placeholder="Sub Judul">
-            <input name="isbn" class="input-modern" placeholder="ISBN">
-            <input name="tahun_terbit" class="input-modern" placeholder="Tahun Terbit" type="number">
-            <textarea name="deskripsi" class="input-modern" placeholder="Deskripsi"></textarea>
-            <input name="jumlah_halaman" class="input-modern" placeholder="Jumlah Halaman" type="number">
-            <select name="penerbit_id" class="input-modern" required>
-                <option value="">-- Pilih Penerbit --</option>
-                @foreach($penerbit as $p)
-                    <option value="{{ $p->id }}">{{ $p->nama_penerbit }}</option>
-                @endforeach
-            </select>
-            <input name="tempat_terbit" class="input-modern" placeholder="Tempat Terbit">
-            <input name="edisi" class="input-modern" placeholder="Edisi">
-            <input name="nomor_panggil" class="input-modern" placeholder="Nomor Panggil">
-            <input name="stok" class="input-modern" placeholder="Stok" type="number">
+                <div class="form-group">
+                    <label class="label">Judul Buku</label>
+                    <input name="judul_buku" class="input-modern" required>
+                </div>
 
-            <button class="btn-primary-custom">Simpan</button>
-            <a href="/buku" class="btn-secondary-custom">Kembali</a>
+                <div class="form-group">
+                    <label class="label">Sub Judul</label>
+                    <input name="sub_judul" class="input-modern">
+                </div>
+
+                <div class="form-group">
+                    <label class="label">ISBN</label>
+                    <input name="isbn" class="input-modern">
+                </div>
+
+                <div class="form-group">
+                    <label class="label">Tahun Terbit</label>
+                    <input type="number" name="tahun_terbit" class="input-modern">
+                </div>
+
+                <div class="form-group full">
+                    <label class="label">Deskripsi</label>
+                    <textarea name="deskripsi" class="input-modern"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="label">Jumlah Halaman</label>
+                    <input type="number" name="jumlah_halaman" class="input-modern">
+                </div>
+
+                <div class="form-group">
+                    <label class="label">Penerbit</label>
+                    <select name="penerbit_id" class="input-modern" required>
+                        <option value="">-- Pilih Penerbit --</option>
+                        @foreach($penerbit as $p)
+                            <option value="{{ $p->id }}">{{ $p->nama_penerbit }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="label">Tempat Terbit</label>
+                    <input name="tempat_terbit" class="input-modern">
+                </div>
+
+                <div class="form-group">
+                    <label class="label">Edisi</label>
+                    <input name="edisi" class="input-modern">
+                </div>
+
+                <div class="form-group">
+                    <label class="label">Nomor Panggil</label>
+                    <input name="nomor_panggil" class="input-modern">
+                </div>
+
+                <div class="form-group">
+                    <label class="label">Stok</label>
+                    <input type="number" name="stok" class="input-modern">
+                </div>
+
+            </div>
+
+            <!-- BUTTON -->
+            <div class="mt-3">
+                <button class="btn-custom btn-primary-custom">Simpan</button>
+                <a href="/buku" class="btn-custom btn-secondary-custom">Kembali</a>
+            </div>
+
         </form>
     </div>
 

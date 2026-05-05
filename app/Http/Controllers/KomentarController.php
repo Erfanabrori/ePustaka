@@ -12,8 +12,9 @@ class KomentarController extends Controller
     public function index()
     {
         $user = User::find(session('user_id'));
+
         $komentar = Komentar::with('buku')
-            ->where('user_id', $user->id)
+            ->where('anggota_id', $user->id)
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -25,10 +26,10 @@ class KomentarController extends Controller
     public function store(Request $request)
     {
         Komentar::create([
-            'user_id' => session('user_id'),
+            'anggota_id' => session('user_id'),
             'buku_id' => $request->buku_id,
-            'komentar' => $request->komentar,
-            'rating' => $request->rating
+            'isi_komentar' => $request->komentar,
+            'rating' => $request->rating ?? null
         ]);
 
         return back()->with('success', 'Komentar berhasil ditambahkan!');
@@ -38,7 +39,7 @@ class KomentarController extends Controller
     {
         $komentar = Komentar::findOrFail($id);
 
-        if ($komentar->user_id == session('user_id')) {
+        if ($komentar->anggota_id == session('user_id')) {
             $komentar->delete();
             return back()->with('success', 'Komentar dihapus!');
         }

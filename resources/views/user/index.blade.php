@@ -14,65 +14,58 @@
     }
 
     .card-modern {
-        background: #ffffff;
-        border-radius: 20px;
+        background: #fff;
+        border-radius: 18px;
         padding: 20px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-        transition: 0.3s;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.05);
     }
 
-    .card-modern:hover {
-        transform: translateY(-3px);
+    .btn-custom {
+        border-radius: 10px;
+        padding: 7px 14px;
+        font-size: 14px;
+        text-decoration: none;
+        display: inline-block;
     }
 
     .btn-primary-custom {
         background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-        color: white;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 10px;
-        text-decoration: none;
-        transition: 0.3s;
-    }
-
-    .btn-primary-custom:hover {
-        opacity: 0.9;
-    }
-
-    .btn-danger-custom {
-        background: #ef4444;
-        color: white;
-        padding: 6px 12px;
-        border-radius: 8px;
-        text-decoration: none;
+        color: #fff;
     }
 
     .btn-warning-custom {
         background: #f59e0b;
-        color: white;
-        padding: 6px 12px;
-        border-radius: 8px;
-        text-decoration: none;
+        color: #fff;
+    }
+
+    .btn-danger-custom {
+        background: #ef4444;
+        color: #fff;
     }
 
     .table-modern th {
         background: var(--primary);
-        color: white;
+        color: #fff;
+        white-space: nowrap;
+        text-align: center;
     }
 
-    .table-modern td,
-    .table-modern th {
-        padding: 12px;
+    .table-modern td {
+        vertical-align: middle;
     }
 
     .table-modern tr:hover {
         background: #f1f5ff;
     }
 
+    .action-buttons a {
+        margin: 2px;
+    }
+
     .fade-in {
         opacity: 0;
         transform: translateY(20px);
-        transition: all 0.5s ease;
+        transition: 0.4s ease;
     }
 
     .fade-in.show {
@@ -83,48 +76,80 @@
 
 <div class="container">
 
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4 fade-in">
-        <h2 class="fw-bold" style="color: var(--primary)">👤 Data Pengguna</h2>
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2 fade-in">
+        <h3 class="fw-bold m-0" style="color: var(--primary)">
+            👤 Data Pengguna
+        </h3>
+
         <div class="d-flex gap-2">
-            <a href="/user/cetak-semua" class="btn-primary-custom" target="_blank">Cetak Semua Kartu</a>
-            <a href="/user/tambah" class="btn-primary-custom">+ Tambah Pengguna</a>
+            <a href="/user/cetak-semua" target="_blank"
+               class="btn-custom btn-primary-custom">
+               Cetak Semua
+            </a>
+
+            <a href="/user/tambah"
+               class="btn-custom btn-primary-custom">
+               + Tambah
+            </a>
         </div>
     </div>
 
-    <!-- Table -->
+    <!-- TABLE -->
     <div class="card-modern fade-in">
-
-        <table class="table table-modern">
-            <thead>
-                <tr>
-                    <th>Nama</th>
-                    <th>Email</th>
-                    <th width="200">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($data as $d)
+        <div class="table-responsive">
+            <table class="table table-modern">
+                <thead>
                     <tr>
-                        <td>{{ $d->name }}</td>
-                        <td>{{ $d->email }}</td>
-                        <td>
-                            <a href="/user/edit/{{ $d->id }}" class="btn-warning-custom">Edit</a>
-                            <a href="/user/hapus/{{ $d->id }}" class="btn-danger-custom"
-                               onclick="return confirm('Yakin hapus data?')">
-                                Hapus
-                            </a>
-                            <a href="/user/cetak/{{ $d->id }}" class="btn-primary-custom" target="_blank">Kartu</a>
-                        </td>
+                        <th>No</th>
+                        <th>Nama</th>
+                        <th>Email</th>
+                        <th>Aksi</th>
                     </tr>
-                @endforeach
-            </tbody>
-        </table>
+                </thead>
+
+                <tbody>
+                    @forelse($data as $i => $d)
+                        <tr>
+                            <td class="text-center">{{ $i + 1 }}</td>
+                            <td><b>{{ $d->name }}</b></td>
+                            <td>{{ $d->email }}</td>
+
+                            <td class="action-buttons text-center">
+                                <a href="/user/edit/{{ $d->id }}"
+                                   class="btn-custom btn-warning-custom">Edit</a>
+
+                                <a href="/user/hapus/{{ $d->id }}"
+                                   class="btn-custom btn-danger-custom"
+                                   onclick="return confirm('Yakin hapus data?')">
+                                   Hapus
+                                </a>
+
+                                <a href="/user/cetak/{{ $d->id }}"
+                                   target="_blank"
+                                   class="btn-custom btn-primary-custom">
+                                   Kartu
+                                </a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" class="text-center py-4">
+                                <span style="color:#888">
+                                    📭 Belum ada data pengguna
+                                </span>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+
+            </table>
+        </div>
     </div>
 
 </div>
 
-<!-- Animasi -->
+<!-- ANIMASI -->
 <script>
     const items = document.querySelectorAll('.fade-in');
 
@@ -132,7 +157,7 @@
         items.forEach((el, i) => {
             setTimeout(() => {
                 el.classList.add('show');
-            }, i * 120);
+            }, i * 100);
         });
     });
 </script>

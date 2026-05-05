@@ -29,7 +29,7 @@
                 <tr>
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ optional($d->user)->name ?? '-' }}</td>
-                    <td>{{ optional($d->Buku)->judul_buku ?? '-' }}</td>
+                    <td>{{ optional($d->buku)->judul_buku ?? '-' }}</td>
                     <td>{{ $d->tanggal_pinjam ? \Carbon\Carbon::parse($d->tanggal_pinjam)->format('d-m-Y') : '-' }}</td>
                     <td>{{ $d->tanggal_kembali ? \Carbon\Carbon::parse($d->tanggal_kembali)->format('d-m-Y') : '-' }}</td>
                     <td>{{ $d->tanggal_kembali ? 'Selesai' : 'Dipinjam' }}</td>

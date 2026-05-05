@@ -78,7 +78,7 @@
                     @forelse($riwayat as $r)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ optional($r->itemBuku)->judul_buku ?? '-' }}</td>
+                            <td>{{ optional($r->buku)->judul_buku ?? '-' }}</td>
                             <td>{{ $r->tanggal_pinjam ? \Carbon\Carbon::parse($r->tanggal_pinjam)->format('d-m-Y') : '-' }}</td>
                             <td>{{ $r->tanggal_kembali ? \Carbon\Carbon::parse($r->tanggal_kembali)->format('d-m-Y') : '-' }}</td>
                             <td>

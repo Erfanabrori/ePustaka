@@ -8,6 +8,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\BukuController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PeminjamanController;
+use App\Http\Controllers\WishlistController;
+use App\Http\Controllers\KomentarController; // ✅ FIX UTAMA
 
 
 Route::get('/', [AuthController::class, 'formLogin']);
@@ -26,14 +28,14 @@ Route::middleware(['cek.login'])->group(function () {
 
     // Route buku admin (tambah, edit, hapus)
     Route::middleware(['cek.role'])->group(function () {
-    Route::get('/buku/tambah', [BukuController::class, 'create']);
-    Route::post('/buku/simpan', [BukuController::class, 'store']);
-    Route::get('/buku/edit/{id}', [BukuController::class, 'edit']);
-    Route::put('/buku/update/{id}', [BukuController::class, 'update']);
-    Route::get('/buku/hapus/{id}', [BukuController::class, 'destroy']);
-    Route::get('/buku/cetak/{id}', [BukuController::class, 'cetakBarcode']);
-    Route::get('/buku/cetak-semua', [BukuController::class, 'cetakSemuaBarcode']);
-});
+        Route::get('/buku/tambah', [BukuController::class, 'create']);
+        Route::post('/buku/simpan', [BukuController::class, 'store']);
+        Route::get('/buku/edit/{id}', [BukuController::class, 'edit']);
+        Route::put('/buku/update/{id}', [BukuController::class, 'update']);
+        Route::get('/buku/hapus/{id}', [BukuController::class, 'destroy']);
+        Route::get('/buku/cetak/{id}', [BukuController::class, 'cetakBarcode']);
+        Route::get('/buku/cetak-semua', [BukuController::class, 'cetakSemuaBarcode']);
+    });
 
     Route::get('/peminjaman', [PeminjamanController::class, 'index']);
     Route::get('/peminjaman/tambah', [PeminjamanController::class, 'create']);
@@ -41,7 +43,6 @@ Route::middleware(['cek.login'])->group(function () {
     Route::get('/peminjaman/kembali/{id}', [PeminjamanController::class, 'kembali']);
 
     Route::get('/profil', function () {
-        // Hanya user biasa yang bisa akses profil
         if (session('role') === 'admin') {
             return redirect('/dashboard');
         }
@@ -50,7 +51,6 @@ Route::middleware(['cek.login'])->group(function () {
     });
 
     Route::post('/profil/update', function (Request $request) {
-        // Hanya user biasa yang bisa update profil
         if (session('role') === 'admin') {
             return redirect('/dashboard');
         }
@@ -67,12 +67,16 @@ Route::middleware(['cek.login'])->group(function () {
         return back()->with('success', 'Password berhasil diubah!');
     });
 
-    // MENU USER (Riwayat Transaksi, Komentar, Wishlist)
+    // MENU USER
     Route::middleware(['cek.role.user'])->group(function () {
         Route::get('/riwayat', [PeminjamanController::class, 'riwayat']);
+
+        // ✅ KOMENTAR (SUDAH FIX)
         Route::get('/komentar', [KomentarController::class, 'index']);
         Route::post('/komentar', [KomentarController::class, 'store']);
         Route::get('/komentar/hapus/{id}', [KomentarController::class, 'destroy']);
+
+        // WISHLIST
         Route::get('/wishlist', [WishlistController::class, 'index']);
         Route::post('/wishlist/tambah', [WishlistController::class, 'store']);
         Route::get('/wishlist/hapus/{id}', [WishlistController::class, 'destroy']);
@@ -91,6 +95,7 @@ Route::middleware(['cek.login', 'cek.role'])->group(function () {
     Route::get('/user/hapus/{id}', [UserController::class, 'destroy']);
     Route::get('/user/cetak/{id}', [UserController::class, 'cetakKartu']);
     Route::get('/user/cetak-semua', [UserController::class, 'cetakSemuaKartu']);
+
     Route::get('/laporan', [PeminjamanController::class, 'laporan']);
     Route::get('/laporan/cetak', [PeminjamanController::class, 'cetakLaporan']);
 

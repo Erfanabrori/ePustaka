@@ -6,18 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class Komentar extends Model
 {
-    protected $table = 'komentar';
+    protected $table = 'komentar_buku';
 
     protected $fillable = [
-        'user_id',
+        'anggota_id',
         'buku_id',
-        'komentar',
+        'isi_komentar',
         'rating'
     ];
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'anggota_id');
     }
 
     public function buku()

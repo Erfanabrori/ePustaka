@@ -1,76 +1,129 @@
 @extends('layouts.app')
 
 @section('content')
-    <style>
-        :root {
-            --primary: #2f4b8f;
-            --primary-dark: #1e3a8a;
-            --soft-bg: #f4f6fb;
-        }
+<style>
+    :root {
+        --primary: #2f4b8f;
+        --primary-dark: #1e3a8a;
+        --soft-bg: #f4f6fb;
+    }
 
-        body {
-            background: var(--soft-bg);
-        }
+    body {
+        background: var(--soft-bg);
+    }
 
-        .card-modern {
-            background: #ffffff;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-        }
+    .card-modern {
+        background: #fff;
+        border-radius: 18px;
+        padding: 20px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    }
 
-        .btn-primary-custom {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 10px;
-            text-decoration: none;
-        }
+    .btn-custom {
+        border-radius: 10px;
+        padding: 7px 14px;
+        font-size: 14px;
+        text-decoration: none;
+    }
 
-        .table-modern th {
-            background: var(--primary);
-            color: white;
-        }
+    .btn-primary-custom {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: #fff;
+        border: none;
+    }
 
-        .table-modern td,
-        .table-modern th {
-            padding: 12px;
-        }
+    .table-modern th {
+        background: var(--primary);
+        color: #fff;
+        text-align: center;
+        white-space: nowrap;
+    }
 
-        .table-modern tr:hover {
-            background: #f1f5ff;
-        }
-    </style>
+    .table-modern td {
+        vertical-align: middle;
+    }
 
-    <div class="container">
-        <h2 class="fw-bold mb-4" style="color: var(--primary)">📊 Laporan Transaksi Peminjaman</h2>
+    .table-modern tr:hover {
+        background: #f1f5ff;
+    }
 
-        <!-- Filter -->
-        <div class="card-modern mb-4">
-            <form method="GET" class="d-flex gap-3 align-items-center">
-                <select name="bulan" class="form-control" style="width: 150px;">
-                    <option value="">-- Bulan --</option>
-                    @for($i = 1; $i <= 12; $i++)
-                        <option value="{{ $i }}" {{ request('bulan') == $i ? 'selected' : '' }}>
-                            {{ \Carbon\Carbon::create()->month($i)->format('F') }}
-                        </option>
-                    @endfor
-                </select>
-                <select name="tahun" class="form-control" style="width: 150px;">
-                    <option value="">-- Tahun --</option>
-                    @for($i = 2023; $i <= date('Y'); $i++)
-                        <option value="{{ $i }}" {{ request('tahun') == $i ? 'selected' : '' }}>{{ $i }}</option>
-                    @endfor
-                </select>
-                <button class="btn-primary-custom">Filter</button>
-                <a href="/laporan/cetak?bulan={{ request('bulan') }}&tahun={{ request('tahun') }}"
-                   class="btn-primary-custom" target="_blank">Cetak</a>
-            </form>
-        </div>
+    .badge-status {
+        padding: 5px 10px;
+        border-radius: 8px;
+        font-size: 12px;
+    }
 
-        <!-- Tabel Laporan -->
-        <div class="card-modern">
+    .badge-dipinjam {
+        background: #f59e0b;
+        color: #fff;
+    }
+
+    .badge-selesai {
+        background: #16a34a;
+        color: #fff;
+    }
+
+    .filter-box {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .filter-box select {
+        border-radius: 10px;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+    }
+</style>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="mb-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <h3 class="fw-bold m-0" style="color: var(--primary)">
+            📊 Laporan Transaksi
+        </h3>
+    </div>
+
+    <!-- FILTER -->
+    <div class="card-modern mb-3">
+        <form method="GET" class="filter-box">
+
+            <select name="bulan">
+                <option value="">-- Bulan --</option>
+                @for($i = 1; $i <= 12; $i++)
+                    <option value="{{ $i }}" {{ request('bulan') == $i ? 'selected' : '' }}>
+                        {{ \Carbon\Carbon::create()->month($i)->format('F') }}
+                    </option>
+                @endfor
+            </select>
+
+            <select name="tahun">
+                <option value="">-- Tahun --</option>
+                @for($i = 2023; $i <= date('Y'); $i++)
+                    <option value="{{ $i }}" {{ request('tahun') == $i ? 'selected' : '' }}>
+                        {{ $i }}
+                    </option>
+                @endfor
+            </select>
+
+            <button class="btn-custom btn-primary-custom">
+                Filter
+            </button>
+
+            <a href="/laporan/cetak?bulan={{ request('bulan') }}&tahun={{ request('tahun') }}"
+               target="_blank"
+               class="btn-custom btn-primary-custom">
+               Cetak
+            </a>
+
+        </form>
+    </div>
+
+    <!-- TABLE -->
+    <div class="card-modern">
+        <div class="table-responsive">
             <table class="table table-modern">
                 <thead>
                     <tr>
@@ -82,29 +135,57 @@
                         <th>Status</th>
                     </tr>
                 </thead>
+
                 <tbody>
-                    @forelse($data as $d)
+                    @forelse($data as $i => $d)
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
+                            <td class="text-center">{{ $i + 1 }}</td>
+
                             <td>{{ optional($d->user)->name ?? '-' }}</td>
-                            <td>{{ optional($d->Buku)->judul_buku ?? '-' }}</td>
-                            <td>{{ $d->tanggal_pinjam ? \Carbon\Carbon::parse($d->tanggal_pinjam)->format('d-m-Y') : '-' }}</td>
-                            <td>{{ $d->tanggal_kembali ? \Carbon\Carbon::parse($d->tanggal_kembali)->format('d-m-Y') : '-' }}</td>
+
                             <td>
+                                <b>{{ optional($d->buku)->judul_buku ?? '-' }}</b>
+                            </td>
+
+                            <td>
+                                {{ $d->tanggal_pinjam
+                                    ? \Carbon\Carbon::parse($d->tanggal_pinjam)->format('d M Y')
+                                    : '-' }}
+                            </td>
+
+                            <td>
+                                {{ $d->tanggal_kembali
+                                    ? \Carbon\Carbon::parse($d->tanggal_kembali)->format('d M Y')
+                                    : '-' }}
+                            </td>
+
+                            <td class="text-center">
                                 @if($d->tanggal_kembali)
-                                    <span class="badge bg-success text-white px-2 py-1 rounded">Selesai</span>
+                                    <span class="badge-status badge-selesai">
+                                        ✔ Selesai
+                                    </span>
                                 @else
-                                    <span class="badge bg-warning text-dark px-2 py-1 rounded">Dipinjam</span>
+                                    <span class="badge-status badge-dipinjam">
+                                        ⏳ Dipinjam
+                                    </span>
                                 @endif
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center">Tidak ada data</td>
+                            <td colspan="6" class="text-center py-4">
+                                <span style="color:#888">
+                                    📭 Tidak ada data laporan
+                                </span>
+                            </td>
                         </tr>
                     @endforelse
                 </tbody>
+
             </table>
         </div>
     </div>
+
+</div>
+
 @endsection

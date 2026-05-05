@@ -1,127 +1,136 @@
 @extends('layouts.app')
 
 @section('content')
-    <style>
-        :root {
-            --primary: #2f4b8f;
-            --primary-dark: #1e3a8a;
-            --soft-bg: #f4f6fb;
-        }
+<style>
+    :root {
+        --primary: #2f4b8f;
+        --primary-dark: #1e3a8a;
+        --soft-bg: #f4f6fb;
+    }
 
-        body {
-            background: var(--soft-bg);
-        }
+    body {
+        background: var(--soft-bg);
+    }
 
-        .card-modern {
-            background: #ffffff;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-            transition: 0.3s;
-        }
+    .card-modern {
+        background: #fff;
+        border-radius: 18px;
+        padding: 22px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        transition: 0.25s;
+    }
 
-        .card-modern:hover {
-            transform: translateY(-3px);
-        }
+    .card-modern:hover {
+        transform: translateY(-2px);
+    }
 
-        .btn-primary-custom {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 10px;
-            text-decoration: none;
-            transition: 0.3s;
-        }
+    .btn-custom {
+        border-radius: 10px;
+        padding: 7px 14px;
+        font-size: 14px;
+        text-decoration: none;
+        display: inline-block;
+    }
 
-        .btn-danger-custom {
-            background: #ef4444;
-            color: white;
-            padding: 6px 12px;
-            border-radius: 8px;
-            text-decoration: none;
-        }
+    .btn-primary-custom {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: #fff;
+        border: none;
+    }
 
-        .btn-warning-custom {
-            background: #f59e0b;
-            color: white;
-            padding: 6px 12px;
-            border-radius: 8px;
-            text-decoration: none;
-        }
+    .btn-warning-custom {
+        background: #f59e0b;
+        color: #fff;
+    }
 
-        .table-modern th {
-            background: var(--primary);
-            color: white;
-        }
+    .btn-danger-custom {
+        background: #ef4444;
+        color: #fff;
+    }
 
-        .table-modern td,
-        .table-modern th {
-            padding: 12px;
-        }
+    .table-modern {
+        font-size: 14px;
+    }
 
-        .table-modern tr:hover {
-            background: #f1f5ff;
-        }
+    .table-modern th {
+        background: var(--primary);
+        color: #fff;
+        white-space: nowrap;
+        text-align: center;
+    }
 
-        .search-box {
-            border-radius: 10px;
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            width: 250px;
-        }
+    .table-modern td {
+        vertical-align: middle;
+    }
 
-        .fade-in {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.5s ease;
-        }
+    .table-modern tr:hover {
+        background: #f1f5ff;
+    }
 
-        .fade-in.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    </style>
+    .search-box {
+        border-radius: 10px;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        min-width: 220px;
+    }
 
-    <div class="container">
+    .action-buttons a {
+        margin: 2px;
+    }
 
-        <!-- Header -->
-        <div class="d-flex justify-content-between align-items-center mb-4 fade-in">
-            <h2 class="fw-bold" style="color: var(--primary)">
-                📚 Daftar Buku
-            </h2>
-        </div>
+    .fade-in {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.5s ease;
+    }
 
-        <!-- Search & Tambah -->
-        <div class="card-modern mb-3 fade-in">
-            <form method="GET" class="d-flex gap-2">
-                <input type="text" name="search" placeholder="Cari buku..." class="search-box">
-                <button class="btn-primary-custom">Cari</button>
+    .fade-in.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+</style>
 
-                @if ($role === 'admin')
-                    <a href="/buku/tambah" class="btn-primary-custom">+ Tambah Buku</a>
-                    <a href="/buku/cetak-semua" class="btn-primary-custom" target="_blank">Cetak Barcode</a>
-                @endif
-            </form>
-        </div>
+<div class="container">
 
-        <!-- Table -->
-        <div class="card-modern fade-in">
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4 fade-in">
+        <h3 class="fw-bold m-0" style="color: var(--primary)">
+            📚 Daftar Buku
+        </h3>
+
+        @if ($role === 'admin')
+            <div>
+                <a href="/buku/tambah" class="btn-custom btn-primary-custom">+ Tambah</a>
+                <a href="/buku/cetak-semua" target="_blank" class="btn-custom btn-primary-custom">Cetak Barcode</a>
+            </div>
+        @endif
+    </div>
+
+    <!-- SEARCH -->
+    <div class="card-modern mb-3 fade-in">
+        <form method="GET" class="d-flex flex-wrap gap-2 align-items-center">
+            <input type="text" name="search" placeholder="Cari buku..." class="search-box">
+            <button class="btn-custom btn-primary-custom">Cari</button>
+        </form>
+    </div>
+
+    <!-- TABLE -->
+    <div class="card-modern fade-in">
+        <div class="table-responsive">
             <table class="table table-modern">
                 <thead>
                     <tr>
-                        <th>Judul Buku</th>
-                        <th>Sub Judul</th>
+                        <th>Judul</th>
+                        <th>Sub</th>
                         <th>ISBN</th>
-                        <th>Tahun Terbit</th>
-                        <th>Deskripsi</th>
-                        <th>Jumlah Halaman</th>
+                        <th>Tahun</th>
+                        <th>Halaman</th>
                         <th>Penerbit</th>
-                        <th>Tempat Terbit</th>
+                        <th>Tempat</th>
                         <th>Edisi</th>
-                        <th>Nomor Panggil</th>
+                        <th>Panggil</th>
                         <th>Stok</th>
-                        <th width="200">Aksi</th>
+                        <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -131,26 +140,23 @@
                             <td>{{ $b->sub_judul ?? '-' }}</td>
                             <td>{{ $b->isbn ?? '-' }}</td>
                             <td>{{ $b->tahun_terbit ?? '-' }}</td>
-                            <td>{{ $b->deskripsi ?? '-' }}</td>
                             <td>{{ $b->jumlah_halaman ?? '-' }}</td>
                             <td>{{ optional($b->penerbit)->nama_penerbit ?? '-' }}</td>
                             <td>{{ $b->tempat_terbit ?? '-' }}</td>
                             <td>{{ $b->edisi ?? '-' }}</td>
                             <td>{{ $b->nomor_panggil ?? '-' }}</td>
-                            <td>{{ $b->stok ?? '-' }}</td>
-                            <td>
+                            <td><b>{{ $b->stok ?? 0 }}</b></td>
+
+                            <td class="action-buttons">
                                 @if ($role === 'admin')
-                                    <a href="/buku/edit/{{ $b->id }}" class="btn-warning-custom">Edit</a>
-                                    <a href="/buku/hapus/{{ $b->id }}" class="btn-danger-custom"
-                                        onclick="return confirm('Yakin hapus data?')">
-                                        Hapus
-                                    </a>
-                                    <a href="/buku/cetak/{{ $b->id }}" class="btn-primary-custom" target="_blank">Barcode</a>
+                                    <a href="/buku/edit/{{ $b->id }}" class="btn-custom btn-warning-custom">Edit</a>
+                                    <a href="/buku/hapus/{{ $b->id }}" class="btn-custom btn-danger-custom"
+                                       onclick="return confirm('Yakin hapus data?')">Hapus</a>
+                                    <a href="/buku/cetak/{{ $b->id }}" target="_blank"
+                                       class="btn-custom btn-primary-custom">Barcode</a>
                                 @else
                                     <a href="/peminjaman/tambah?buku_id={{ $b->id }}"
-                                        class="btn-primary-custom">
-                                        Pinjam
-                                    </a>
+                                       class="btn-custom btn-primary-custom">Pinjam</a>
                                 @endif
                             </td>
                         </tr>
@@ -158,18 +164,19 @@
                 </tbody>
             </table>
         </div>
-
     </div>
 
-    <script>
-        const items = document.querySelectorAll('.fade-in');
+</div>
 
-        window.addEventListener('load', () => {
-            items.forEach((el, i) => {
-                setTimeout(() => {
-                    el.classList.add('show');
-                }, i * 120);
-            });
+<script>
+    const items = document.querySelectorAll('.fade-in');
+
+    window.addEventListener('load', () => {
+        items.forEach((el, i) => {
+            setTimeout(() => {
+                el.classList.add('show');
+            }, i * 100);
         });
-    </script>
+    });
+</script>
 @endsection

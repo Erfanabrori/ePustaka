@@ -7,128 +7,149 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
+        :root {
+            --primary: #2f4b8f;
+            --dark: #1f2937;
+            --soft-bg: #f4f6fb;
+        }
+
         body {
-            background-color: #f4f6f9;
+            background: var(--soft-bg);
             font-family: 'Segoe UI', sans-serif;
         }
 
         /* SIDEBAR */
         .sidebar {
             height: 100vh;
-            background: linear-gradient(180deg, #2c3e50, #1a252f);
-            color: white;
-            padding: 20px;
+            width: 230px;
             position: fixed;
-            width: 220px;
-            animation: slideLeft 0.5s ease;
+            background: linear-gradient(180deg, #1f2937, #111827);
+            color: #fff;
+            padding: 20px 15px;
         }
 
         .sidebar h4 {
-            margin-bottom: 25px;
-            font-weight: bold;
             text-align: center;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .menu-title {
+            font-size: 11px;
+            color: #9ca3af;
+            margin: 15px 0 5px;
+            text-transform: uppercase;
         }
 
         .sidebar a {
             display: block;
-            color: white;
+            color: #e5e7eb;
             padding: 10px 12px;
-            margin-bottom: 5px;
-            text-decoration: none;
             border-radius: 8px;
-            transition: all 0.3s ease;
+            text-decoration: none;
+            font-size: 14px;
+            transition: 0.25s;
         }
 
         .sidebar a:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateX(5px);
+            background: rgba(255,255,255,0.08);
+            transform: translateX(4px);
         }
 
         .sidebar .active {
-            background: rgba(255, 255, 255, 0.2);
+            background: var(--primary);
+            color: #fff;
+        }
+
+        /* TOPBAR */
+        .topbar {
+            margin-left: 230px;
+            background: #fff;
+            padding: 12px 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .topbar .user {
+            font-size: 14px;
+            color: #555;
         }
 
         /* CONTENT */
         .content {
             margin-left: 230px;
             padding: 25px;
-            animation: fadeIn 0.5s ease;
         }
 
         /* CARD */
         .card-custom {
-            background: white;
-            border-radius: 12px;
+            background: #fff;
+            border-radius: 15px;
             padding: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: 0.3s;
         }
 
         .card-custom:hover {
-            transform: translateY(-3px);
-        }
-
-        /* ANIMATION */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideLeft {
-            from {
-                transform: translateX(-30px);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+            transform: translateY(-2px);
         }
     </style>
 </head>
 
 <body>
 
-    @php
-        $user = \App\Models\User::find(session('user_id'));
-    @endphp
+@php
+    $user = \App\Models\User::find(session('user_id'));
+@endphp
 
-    <div class="sidebar">
-        <h4>📚 ePerpus</h4>
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h4>📚 ePerpus</h4>
 
-        <a href="/dashboard">Dashboard</a>
+    <div class="menu-title">Menu</div>
+    <a href="/dashboard" class="{{ request()->is('dashboard') ? 'active' : '' }}">Dashboard</a>
 
-        @if ($user && $user->role == 'admin')
-            <a href="/user">Data Pengguna</a>
-            <a href="/buku">Data Buku</a>
-            <a href="/laporan">Laporan Transaksi</a>
-        @else
-            <a href="/buku">Daftar Buku</a>
-        @endif
+    @if ($user && $user->role == 'admin')
+        <div class="menu-title">Admin</div>
+        <a href="/user" class="{{ request()->is('user*') ? 'active' : '' }}">Data Pengguna</a>
+        <a href="/buku" class="{{ request()->is('buku*') ? 'active' : '' }}">Data Buku</a>
+        <a href="/laporan" class="{{ request()->is('laporan*') ? 'active' : '' }}">Laporan</a>
+    @else
+        <div class="menu-title">Buku</div>
+        <a href="/buku" class="{{ request()->is('buku*') ? 'active' : '' }}">Daftar Buku</a>
+    @endif
 
-        <a href="/peminjaman">Peminjaman</a>
-        @if($user && $user->role !== 'admin')
-        <a href="/riwayat">Riwayat Transaksi</a>
-        <a href="/komentar">Komentar</a>
-        <a href="/wishlist">Wishlist</a>
-        <a href="/profil">Profil</a>
-        @endif
+    <div class="menu-title">Transaksi</div>
+    <a href="/peminjaman" class="{{ request()->is('peminjaman*') ? 'active' : '' }}">Peminjaman</a>
 
-        <hr style="border-color: rgba(255,255,255,0.2)">
+    @if($user && $user->role !== 'admin')
+        <a href="/riwayat" class="{{ request()->is('riwayat*') ? 'active' : '' }}">Riwayat</a>
+        <a href="/komentar" class="{{ request()->is('komentar*') ? 'active' : '' }}">Komentar</a>
+        <a href="/wishlist" class="{{ request()->is('wishlist*') ? 'active' : '' }}">Wishlist</a>
+        <a href="/profil" class="{{ request()->is('profil*') ? 'active' : '' }}">Profil</a>
+    @endif
 
-        <a href="/logout">Logout</a>
+    <div class="menu-title">Akun</div>
+    <a href="/logout">Logout</a>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+    <div>
+        <strong>Dashboard Perpustakaan</strong>
     </div>
 
-    <div class="content">
-        @yield('content')
+    <div class="user">
+        👤 {{ $user->name ?? 'User' }}
     </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+    @yield('content')
+</div>
 
 </body>
-
 </html>

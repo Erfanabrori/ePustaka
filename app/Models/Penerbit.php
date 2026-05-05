@@ -8,7 +8,7 @@ class Penerbit extends Model
 {
     protected $table = 'penerbit';
 
-    protected $fillable = ['nama'];
+    protected $fillable = ['nama_penerbit'];
 
     // relasi ke buku (optional tapi bagus)
     public function buku()

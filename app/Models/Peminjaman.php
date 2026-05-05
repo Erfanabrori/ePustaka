@@ -17,13 +17,13 @@ class Peminjaman extends Model
         'tanggal_kembali'
     ];
 
-    // RELASI ITEM BUKU (INI WAJIB SAMA DENGAN WITH DI CONTROLLER)
-    public function Buku()
+    // RELASI KE BUKU (WAJIB HURUF KECIL)
+    public function buku()
     {
         return $this->belongsTo(Buku::class, 'buku_id');
     }
 
-    // RELASI USER
+    // RELASI KE USER
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
