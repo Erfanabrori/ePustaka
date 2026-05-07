@@ -79,7 +79,7 @@
     <!-- HEADER -->
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2 fade-in">
         <h3 class="fw-bold m-0" style="color: var(--primary)">
-            👤 Data Pengguna
+            <i class="bi bi-people-fill" style="margin-right: 8px;"></i>Data Pengguna
         </h3>
 
         <div class="d-flex gap-2">
@@ -136,7 +136,7 @@
                         <tr>
                             <td colspan="4" class="text-center py-4">
                                 <span style="color:#888">
-                                    📭 Belum ada data pengguna
+                                    <i class="bi bi-inbox" style="margin-right: 6px;"></i>Belum ada data pengguna
                                 </span>
                             </td>
                         </tr>

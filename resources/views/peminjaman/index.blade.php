@@ -87,9 +87,9 @@
     <div class="d-flex justify-content-between align-items-center mb-4 fade-in">
         <h3 class="fw-bold m-0" style="color: var(--primary)">
             @if ($role === 'admin')
-                📖 Data Peminjaman
+                <i class="bi bi-book-open" style="margin-right: 8px;"></i>Data Peminjaman
             @else
-                📖 Peminjaman Saya
+                <i class="bi bi-book-open" style="margin-right: 8px;"></i>Peminjaman Saya
             @endif
         </h3>
 

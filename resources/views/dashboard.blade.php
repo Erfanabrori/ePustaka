@@ -93,7 +93,7 @@
         <h3 class="page-title">
             {{ $role == 'admin' ? 'Dashboard Admin' : 'Dashboard Perpustakaan' }}
         </h3>
-        <p class="text-muted">Selamat datang, <b>{{ $nama }}</b> 👋</p>
+        <p class="text-muted">Selamat datang, <b>{{ $nama }}</b> <i class="bi bi-hand-thumbs-up"></i></p>
     </div>
 
     {{-- ADMIN --}}
@@ -112,14 +112,14 @@
         <div class="col-md-4 fade-in">
             <div class="stat-card text-center">
                 <div class="stat-number">{{ \App\Models\Peminjaman::count() }}</div>
-                <div class="stat-label">📖 Total Peminjaman</div>
+                <div class="stat-label"><i class="bi bi-book-open" style="margin-right: 6px;"></i>Total Peminjaman</div>
             </div>
         </div>
 
         <div class="col-md-4 fade-in">
             <div class="stat-card text-center">
                 <div class="stat-number">{{ \App\Models\User::count() }}</div>
-                <div class="stat-label">👥 Total User</div>
+                <div class="stat-label"><i class="bi bi-people-fill" style="margin-right: 6px;"></i>Total User</div>
             </div>
         </div>
 
@@ -127,19 +127,19 @@
 
     <!-- FEATURES -->
     <div class="feature-box fade-in">
-        <h5 class="fw-bold mb-3">⚡ Menu Cepat</h5>
+        <h5 class="fw-bold mb-3"><i class="bi bi-lightning-fill" style="margin-right: 8px;"></i>Menu Cepat</h5>
 
         <div class="row">
             <div class="col-md-6">
-                <a href="/buku" class="feature-item">📚 Kelola Buku</a>
-                <a href="/peminjaman" class="feature-item">📖 Kelola Peminjaman</a>
-                <a href="/user" class="feature-item">👥 Kelola User</a>
+                <a href="/buku" class="feature-item"><i class="bi bi-book-fill" style="margin-right: 8px;"></i>Kelola Buku</a>
+                <a href="/peminjaman" class="feature-item"><i class="bi bi-book-open" style="margin-right: 8px;"></i>Kelola Peminjaman</a>
+                <a href="/user" class="feature-item"><i class="bi bi-people-fill" style="margin-right: 8px;"></i>Kelola User</a>
             </div>
 
             <div class="col-md-6">
-                <a href="/buku/tambah" class="feature-item">➕ Tambah Buku</a>
-                <a href="/user/tambah" class="feature-item">➕ Tambah User</a>
-                <a href="/profil" class="feature-item">👤 Profil</a>
+                <a href="/buku/tambah" class="feature-item"><i class="bi bi-plus-circle-fill" style="margin-right: 8px;"></i>Tambah Buku</a>
+                <a href="/user/tambah" class="feature-item"><i class="bi bi-plus-circle-fill" style="margin-right: 8px;"></i>Tambah User</a>
+                <a href="/profil" class="feature-item"><i class="bi bi-person-fill" style="margin-right: 8px;"></i>Profil</a>
             </div>
         </div>
     </div>
@@ -153,7 +153,7 @@
         <div class="col-md-4 fade-in">
             <div class="stat-card text-center">
                 <div class="stat-number">{{ \App\Models\Buku::count() }}</div>
-                <div class="stat-label">📚 Total Buku</div>
+                <div class="stat-label"><i class="bi bi-book-fill" style="margin-right: 6px;"></i>Total Buku</div>
             </div>
         </div>
 
@@ -162,13 +162,13 @@
                 <div class="stat-number">
                     {{ \App\Models\Peminjaman::where('user_id', session('user_id'))->count() }}
                 </div>
-                <div class="stat-label">📖 Peminjaman Saya</div>
+                <div class="stat-label"><i class="bi bi-book-open" style="margin-right: 6px;"></i>Peminjaman Saya</div>
             </div>
         </div>
 
         <div class="col-md-4 fade-in">
             <div class="stat-card text-center">
-                <div class="stat-number">✔</div>
+                <div class="stat-number"><i class="bi bi-check-circle-fill" style="font-size: 28px;"></i></div>
                 <div class="stat-label">Status Aktif</div>
             </div>
         </div>
@@ -177,17 +177,17 @@
 
     <!-- FEATURES -->
     <div class="feature-box fade-in">
-        <h5 class="fw-bold mb-3">⚡ Menu</h5>
+        <h5 class="fw-bold mb-3"><i class="bi bi-lightning-fill" style="margin-right: 8px;"></i>Menu</h5>
 
         <div class="row">
             <div class="col-md-4">
-                <a href="/buku" class="feature-item">📚 Lihat Buku</a>
+                <a href="/buku" class="feature-item"><i class="bi bi-book-fill" style="margin-right: 8px;"></i>Lihat Buku</a>
             </div>
             <div class="col-md-4">
-                <a href="/peminjaman" class="feature-item">📖 Peminjaman</a>
+                <a href="/peminjaman" class="feature-item"><i class="bi bi-book-open" style="margin-right: 8px;"></i>Peminjaman</a>
             </div>
             <div class="col-md-4">
-                <a href="/profil" class="feature-item">👤 Profil</a>
+                <a href="/profil" class="feature-item"><i class="bi bi-person-fill" style="margin-right: 8px;"></i>Profil</a>
             </div>
         </div>
     </div>

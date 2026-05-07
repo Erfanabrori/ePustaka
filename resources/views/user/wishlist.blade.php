@@ -48,7 +48,7 @@
     </style>
 
     <div class="container">
-        <h2 class="fw-bold mb-4" style="color: var(--primary)">❤️ Wishlist Buku</h2>
+        <h2 class="fw-bold mb-4" style="color: var(--primary)"><i class="bi bi-heart-fill" style="color: #ef4444; margin-right: 8px;"></i>Wishlist Buku</h2>
 
         <div class="card-modern">
             <table class="table table-modern">

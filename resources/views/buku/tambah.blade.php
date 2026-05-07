@@ -80,7 +80,7 @@
     <!-- HEADER -->
     <div class="mb-4">
         <h3 class="fw-bold" style="color: var(--primary)">
-            ➕ Tambah Buku
+            <i class="bi bi-plus-circle-fill" style="margin-right: 8px;\"></i>Tambah Buku
         </h3>
     </div>
 

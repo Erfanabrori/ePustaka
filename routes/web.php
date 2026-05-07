@@ -71,12 +71,10 @@ Route::middleware(['cek.login'])->group(function () {
     Route::middleware(['cek.role.user'])->group(function () {
         Route::get('/riwayat', [PeminjamanController::class, 'riwayat']);
 
-        // ✅ KOMENTAR (SUDAH FIX)
         Route::get('/komentar', [KomentarController::class, 'index']);
         Route::post('/komentar', [KomentarController::class, 'store']);
         Route::get('/komentar/hapus/{id}', [KomentarController::class, 'destroy']);
 
-        // WISHLIST
         Route::get('/wishlist', [WishlistController::class, 'index']);
         Route::post('/wishlist/tambah', [WishlistController::class, 'store']);
         Route::get('/wishlist/hapus/{id}', [WishlistController::class, 'destroy']);

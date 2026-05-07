@@ -5,6 +5,7 @@
     <title>Perpustakaan</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
     <style>
         :root {
@@ -106,7 +107,7 @@
 
 <!-- SIDEBAR -->
 <div class="sidebar">
-    <h4>📚 ePerpus</h4>
+    <h4><i class="bi bi-book-fill" style="margin-right: 8px;"></i>ePerpus</h4>
 
     <div class="menu-title">Menu</div>
     <a href="/dashboard" class="{{ request()->is('dashboard') ? 'active' : '' }}">Dashboard</a>
@@ -142,7 +143,7 @@
     </div>
 
     <div class="user">
-        👤 {{ $user->name ?? 'User' }}
+        <i class="bi bi-person-circle" style="margin-right: 6px;"></i>{{ $user->name ?? 'User' }}
     </div>
 </div>
 

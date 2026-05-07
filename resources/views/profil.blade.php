@@ -82,14 +82,14 @@
 
 <div class="container">
 
-    <h3 class="mb-4 fw-bold" style="color: var(--primary)">👤 Profil Saya</h3>
+    <h3 class="mb-4 fw-bold" style="color: var(--primary)"><i class="bi bi-person-circle" style="margin-right: 8px;"></i>Profil Saya</h3>
 
     <div class="row">
         <!-- Info Profil -->
         <div class="col-md-4">
             <div class="profil-card text-center">
                 <div class="profil-header">
-                    <div class="avatar-circle">👤</div>
+                    <div class="avatar-circle"><i class="bi bi-person-circle" style="font-size: 32px;"></i></div>
                     <h4 class="fw-bold">{{ $user->name }}</h4>
                     <span class="badge bg-primary">{{ $user->role }}</span>
                 </div>
@@ -104,7 +104,7 @@
         <!-- Form Ganti Password -->
         <div class="col-md-8">
             <div class="profil-card">
-                <h5 class="fw-bold mb-4">🔒 Ganti Password</h5>
+                <h5 class="fw-bold mb-4"><i class="bi bi-lock-fill" style="margin-right: 8px;"></i>Ganti Password</h5>
 
                 <form method="POST" action="/profil/update">
                     @csrf
