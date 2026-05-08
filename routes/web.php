@@ -73,6 +73,8 @@ Route::middleware(['cek.login'])->group(function () {
 
         Route::get('/komentar', [KomentarController::class, 'index']);
         Route::post('/komentar', [KomentarController::class, 'store']);
+        Route::get('/komentar/edit/{id}', [KomentarController::class, 'edit']);
+        Route::post('/komentar/update/{id}', [KomentarController::class, 'update']);
         Route::get('/komentar/hapus/{id}', [KomentarController::class, 'destroy']);
 
         Route::get('/wishlist', [WishlistController::class, 'index']);
@@ -93,6 +95,10 @@ Route::middleware(['cek.login', 'cek.role'])->group(function () {
     Route::get('/user/hapus/{id}', [UserController::class, 'destroy']);
     Route::get('/user/cetak/{id}', [UserController::class, 'cetakKartu']);
     Route::get('/user/cetak-semua', [UserController::class, 'cetakSemuaKartu']);
+
+    Route::get('/komentar', [KomentarController::class, 'adminIndex']);
+    Route::get('/komentar/{id}', [KomentarController::class, 'adminShow']);
+    Route::get('/komentar/hapus/{id}', [KomentarController::class, 'adminDestroy']);
 
     Route::get('/laporan', [PeminjamanController::class, 'laporan']);
     Route::get('/laporan/cetak', [PeminjamanController::class, 'cetakLaporan']);

@@ -48,7 +48,8 @@
     </style>
 
     <div class="container">
-        <h2 class="fw-bold mb-4" style="color: var(--primary)"><i class="bi bi-heart-fill" style="color: #ef4444; margin-right: 8px;"></i>Wishlist Buku</h2>
+        <h2 class="fw-bold mb-4" style="color: var(--primary)"><i class="bi bi-heart-fill"
+                style="color: #ef4444; margin-right: 8px;"></i>Wishlist Buku</h2>
 
         <div class="card-modern">
             <table class="table table-modern">
@@ -63,22 +64,42 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($wishlist as $w)
+                    @forelse($wishlists as $w)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ optional($w->buku)->judul_buku ?? '-' }}</td>
-                            <td>{{ optional($w->buku)->isbn ?? '-' }}</td>
-                            <td>{{ optional($w->buku)->tahun_terbit ?? '-' }}</td>
-                            <td>{{ optional($w->buku)->penerbit->nama_penerbit ?? '-' }}</td>
+
                             <td>
-                                <a href="/peminjaman/tambah?item_buku_id={{ $w->buku_id }}" class="btn-primary-custom">Pinjam</a>
+                                {{ optional($w->buku)->judul_buku ?? '-' }}
+                            </td>
+
+                            <td>
+                                {{ optional($w->buku)->isbn ?? '-' }}
+                            </td>
+
+                            <td>
+                                {{ optional($w->buku)->tahun_terbit ?? '-' }}
+                            </td>
+
+                            <td>
+                                {{ optional(optional($w->buku)->penerbit)->nama_penerbit ?? '-' }}
+                            </td>
+
+                            <td>
+                                <a href="/peminjaman/tambah?item_buku_id={{ $w->buku_id }}" class="btn-primary-custom">
+                                    Pinjam
+                                </a>
+
                                 <a href="/wishlist/hapus/{{ $w->id }}" class="btn-danger-custom"
-                                    onclick="return confirm('Hapus dari wishlist?')">Hapus</a>
+                                    onclick="return confirm('Hapus dari wishlist?')">
+                                    Hapus
+                                </a>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center">Wishlist kosong</td>
+                            <td colspan="6" class="text-center">
+                                Wishlist kosong
+                            </td>
                         </tr>
                     @endforelse
                 </tbody>
