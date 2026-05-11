@@ -154,11 +154,11 @@
 
         <!-- ACTIONS -->
         <div class="mt-4">
-            <a href="/komentar" class="btn-custom btn-primary-custom">
+            <a href="/admin/komentar" class="btn-custom btn-primary-custom">
                 <i class="bi bi-arrow-left"></i> Kembali
             </a>
 
-            <a href="/komentar/hapus/{{ $komentar->id }}"
+            <a href="/admin/komentar/hapus/{{ $komentar->id }}"
                class="btn-custom btn-danger-custom"
                onclick="return confirm('Yakin hapus komentar ini?')">
                <i class="bi bi-trash"></i> Hapus

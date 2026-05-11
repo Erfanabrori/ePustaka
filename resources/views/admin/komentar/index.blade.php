@@ -146,10 +146,10 @@
                                 <small>{{ $d->created_at->format('d M Y') }}</small>
                             </td>
                             <td class="action-buttons text-center">
-                                <a href="/komentar/{{ $d->id }}"
+                                <a href="/admin/komentar/{{ $d->id }}"
                                    class="btn-custom btn-info-custom">Lihat</a>
 
-                                <a href="/komentar/hapus/{{ $d->id }}"
+                                <a href="/admin/komentar/hapus/{{ $d->id }}"
                                    class="btn-custom btn-danger-custom"
                                    onclick="return confirm('Yakin hapus komentar ini?')">
                                    Hapus

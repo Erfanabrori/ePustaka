@@ -158,11 +158,9 @@
                                     <form method="POST" action="/wishlist/tambah" style="display:inline-block; margin:0;">
                                         @csrf
                                         <input type="hidden" name="buku_id" value="{{ $b->id }}">
-                                        <button type="submit" class="btn-custom btn-warning-custom">Wishlist</button>
+                                        <button type="submit" class="btn-custom btn-primary-custom">Wishlist</button>
                                     </form>
-                                    <a href="/komentar?buku_id={{ $b->id }}" class="btn-custom btn-primary-custom">Komentar</a>
-                                    <a href="/peminjaman/tambah?buku_id={{ $b->id }}"
-                                       class="btn-custom btn-secondary-custom">Pinjam</a>
+                                    <a href="/peminjaman/tambah?buku_id={{ $b->id }}"class="btn-custom btn-primary-custom">Pinjam</a>
                                 @endif
                             </td>
                         </tr>

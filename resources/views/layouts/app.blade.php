@@ -305,7 +305,7 @@
             <span class="menu-text">Laporan</span>
         </a>
 
-        <a href="/komentar" class="menu-link {{ request()->is('komentar*') ? 'active' : '' }}">
+        <a href="/admin/komentar" class="menu-link {{ request()->is('admin/komentar*') ? 'active' : '' }}">
             <i class="bi bi-chat-left-text"></i>
             <span class="menu-text">Komentar</span>
         </a>

@@ -1,159 +1,370 @@
 @extends('layouts.app')
 
 @section('content')
-    <style>
-        :root {
-            --primary: #2f4b8f;
-            --primary-dark: #1e3a8a;
-            --soft-bg: #f4f6fb;
-        }
 
-        body {
-            background: var(--soft-bg);
-        }
+<style>
+    :root {
+        --primary: #35539b;
+        --primary-dark: #243f82;
+        --soft-bg: #f4f6fb;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+    }
 
-        .card-modern {
-            background: #ffffff;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-        }
+    body {
+        background: var(--soft-bg);
+    }
 
-        .btn-primary-custom {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 10px;
-        }
+    /* TITLE */
+    .page-title {
+        color: var(--primary);
+        font-size: 30px;
+        font-weight: 700;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
 
-        .btn-danger-custom {
-            background: #ef4444;
-            color: white;
-            padding: 6px 12px;
-            border-radius: 8px;
-            text-decoration: none;
-        }
+    /* CARD */
+    .card-modern {
+        background: #ffffff;
+        border-radius: 26px;
+        padding: 26px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.04);
+        margin-bottom: 25px;
+    }
 
-        .table-modern th {
-            background: var(--primary);
-            color: white;
-        }
+    /* FORM */
+    .form-section {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+    }
 
-        .table-modern td,
-        .table-modern th {
-            padding: 12px;
-        }
+    .form-section h5 {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 22px;
+    }
 
-        .rating-star {
-            color: #f59e0b;
-        }
-    </style>
+    .form-label {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
 
-    <div class="container">
-        <h2 class="fw-bold mb-4" style="color: var(--primary)"><i class="bi bi-chat-dots-fill" style="margin-right: 8px;"></i>Komentar & Rating Buku</h2>
+    .form-control,
+    .form-select {
+        border-radius: 12px;
+        border: 1px solid #dbe1ea;
+        padding: 11px 14px;
+        font-size: 14px;
+    }
 
-        <!-- Alert Success -->
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert" style="border-radius: 10px;">
-                <i class="bi bi-check-circle"></i> {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        @endif
+    textarea.form-control {
+        resize: none;
+    }
 
-        <!-- Form Tambah Komentar -->
-        <div class="card-modern mb-4">
-            <h5 class="mb-3"><i class="bi bi-pencil-fill" style="margin-right: 8px;"></i>Tambah Komentar Buku</h5>
-            <form method="POST" action="/komentar">
-                @csrf
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--primary);
+        box-shadow: none;
+    }
 
-                <div class="mb-3">
-                    <label class="form-label">Pilih Buku <span style="color: red;">*</span></label>
-                    <select name="buku_id" class="form-control" required>
-                        <option value="">-- Pilih Buku --</option>
-                        @foreach($buku as $b)
-                            <option value="{{ $b->id }}" {{ (old('buku_id') == $b->id || (isset($selectedBukuId) && $selectedBukuId == $b->id)) ? 'selected' : '' }}>
-                                {{ $b->judul_buku }} - {{ $b->penulis ?? 'Unknown' }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
+    /* BUTTON */
+    .btn-primary-custom {
+        background: white;
+        color: var(--primary);
+        border: none;
+        padding: 10px 18px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 600;
+        transition: 0.3s;
+    }
 
-                <div class="mb-3">
-                    <label class="form-label">Komentar <span style="color: red;">*</span></label>
-                    <textarea name="komentar" class="form-control" rows="4" placeholder="Tulis komentar Anda tentang buku ini..." required></textarea>
-                </div>
+    .btn-primary-custom:hover {
+        transform: translateY(-2px);
+    }
 
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Rating (Opsional)</label>
-                        <div class="rating-input">
-                            <select name="rating" class="form-control">
-                                <option value="">-- Pilih Rating --</option>
-                                <option value="5">⭐⭐⭐⭐⭐ Sangat Bagus (5)</option>
-                                <option value="4">⭐⭐⭐⭐ Bagus (4)</option>
-                                <option value="3">⭐⭐⭐ Cukup (3)</option>
-                                <option value="2">⭐⭐ Kurang (2)</option>
-                                <option value="1">⭐ Buruk (1)</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">&nbsp;</label>
-                        <button type="submit" class="btn btn-primary-custom w-100">
-                            <i class="bi bi-send-fill" style="margin-right: 6px;"></i>Kirim Komentar
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
+    .btn-warning-custom {
+        background: var(--warning);
+        color: white;
+        padding: 6px 12px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 12px;
+    }
 
-        <!-- Daftar Komentar -->
-        <div class="card-modern">
-            <h5 class="mb-3"><i class="bi bi-chat-dots" style="margin-right: 8px;"></i>Komentar Saya ({{ count($komentar) }})</h5>
+    .btn-danger-custom {
+        background: var(--danger);
+        color: white;
+        padding: 6px 12px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 12px;
+    }
 
-            @forelse($komentar as $k)
-                <div style="border-bottom: 1px solid #e5e7eb; padding: 15px 0; margin-bottom: 15px;">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <div>
-                            <h6 class="mb-1" style="color: var(--primary);">{{ optional($k->buku)->judul_buku ?? '-' }}</h6>
-                            <small class="text-muted">
-                                <i class="bi bi-calendar-event"></i> {{ $k->created_at->format('d M Y') }}
-                                @if($k->rating)
-                                    <span style="margin-left: 10px;">
-                                        @for($i = 1; $i <= 5; $i++)
-                                            @if($i <= $k->rating)
-                                                <span class="rating-star">⭐</span>
-                                            @else
-                                                <span style="color: #d1d5db;">⭐</span>
-                                            @endif
-                                        @endfor
-                                    </span>
-                                @endif
-                            </small>
-                        </div>
-                        <div>
-                            <a href="/komentar/edit/{{ $k->id }}"
-                                class="btn-warning-custom"
-                                style="background: #f59e0b; color: white; padding: 6px 12px; border-radius: 8px; text-decoration: none; display: inline-block; font-size: 12px;">
-                                <i class="bi bi-pencil-square"></i>
-                            </a>
-                            <a href="/komentar/hapus/{{ $k->id }}"
-                                class="btn-danger-custom"
-                                style="font-size: 12px;"
-                                onclick="return confirm('Hapus komentar ini?')">
-                                <i class="bi bi-trash-fill"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <p style="margin: 10px 0; line-height: 1.6;">{{ $k->isi_komentar }}</p>
-                </div>
-            @empty
-                <div class="text-center" style="padding: 40px 0;">
-                    <i class="bi bi-chat-dots-fill" style="font-size: 48px; color: #d1d5db;"></i>
-                    <p class="text-muted mt-3">Belum ada komentar. Tulis komentar pertama Anda tentang sebuah buku!</p>
-                </div>
-            @endforelse
-        </div>
+    /* TABLE */
+    .table-modern {
+        margin-bottom: 0;
+    }
+
+    .table-modern th {
+        background: var(--primary);
+        color: white;
+        padding: 14px 16px;
+        font-size: 14px;
+        font-weight: 700;
+        border: none;
+    }
+
+    .table-modern th:first-child {
+        border-top-left-radius: 10px;
+    }
+
+    .table-modern th:last-child {
+        border-top-right-radius: 10px;
+    }
+
+    .table-modern td {
+        padding: 16px;
+        font-size: 14px;
+        vertical-align: middle;
+        border-bottom: 1px solid #edf0f5;
+    }
+
+    .table-modern tr:hover {
+        background: #f8faff;
+    }
+
+    /* BADGE */
+    .rating-badge {
+        background: #6b7280;
+        color: white;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        display: inline-block;
+    }
+
+    /* EMPTY */
+    .empty-box {
+        text-align: center;
+        padding: 40px 0;
+        color: #6b7280;
+        font-size: 14px;
+    }
+
+    /* ANIMATION */
+    .fade-in {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.5s ease;
+    }
+
+    .fade-in.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+</style>
+
+<div class="container">
+
+    <!-- TITLE -->
+    <h2 class="page-title fade-in">
+        <i></i>
+        Komentar & Rating Buku
+    </h2>
+
+    <!-- TABLE -->
+    <div class="card-modern fade-in">
+
+        <table class="table table-modern">
+
+            <thead>
+
+                <tr>
+                    <th width="60">No</th>
+                    <th>Judul Buku</th>
+                    <th>Komentar</th>
+                    <th width="120">Rating</th>
+                    <th width="150">Tanggal</th>
+                    <th width="120">Aksi</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @forelse($komentar as $k)
+
+                    <tr>
+
+                        <td>{{ $loop->iteration }}</td>
+
+                        <td>
+                            {{ optional($k->buku)->judul_buku ?? '-' }}
+                        </td>
+
+                        <td style="max-width: 350px;">
+                            {{ $k->isi_komentar }}
+                        </td>
+
+                        <td>
+
+                            @if($k->rating)
+
+                                <span class="rating-badge">
+                                    ⭐ {{ $k->rating }}/5
+                                </span>
+
+                            @else
+                                -
+                            @endif
+
+                        </td>
+
+                        <td>
+                            {{ $k->created_at->format('d-m-Y') }}
+                        </td>
+
+                        <td>
+
+                            <div class="d-flex gap-2">
+
+                                <a href="/komentar/edit/{{ $k->id }}"
+                                   class="btn-warning-custom">
+                                    ✏️
+                                </a>
+
+                                <a href="/komentar/hapus/{{ $k->id }}"
+                                   class="btn-danger-custom"
+                                   onclick="return confirm('Hapus komentar ini?')">
+                                    🗑️
+                                </a>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                @empty
+
+                    <tr>
+
+                        <td colspan="6">
+
+                            <div class="empty-box">
+
+                                Belum ada komentar
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                @endforelse
+
+            </tbody>
+
+        </table>
+
     </div>
+
+    <!-- FORM -->
+    <div class="card-modern form-section fade-in">
+
+        <h5>
+        Tambah Komentar Buku
+        </h5>
+
+        <form method="POST" action="/komentar">
+            @csrf
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+                        Pilih Buku
+                    </label>
+
+                    <select name="buku_id" class="form-select" required>
+
+                        <option value="">-- Pilih Buku --</option>
+
+                        @foreach($buku as $b)
+
+                            <option value="{{ $b->id }}">
+
+                                {{ $b->judul_buku }}
+
+                            </option>
+
+                        @endforeach
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+                        Rating
+                    </label>
+
+                    <select name="rating" class="form-select">
+
+                        <option value="">-- Pilih Rating --</option>
+                        <option value="5">⭐⭐⭐⭐⭐ Sangat Bagus</option>
+                        <option value="4">⭐⭐⭐⭐ Bagus</option>
+                        <option value="3">⭐⭐⭐ Cukup</option>
+                        <option value="2">⭐⭐ Kurang</option>
+                        <option value="1">⭐ Buruk</option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Komentar
+                </label>
+
+                <textarea name="komentar"
+                          rows="4"
+                          class="form-control"
+                          placeholder="Tulis komentar Anda..."
+                          required></textarea>
+
+            </div>
+
+            <button type="submit" class="btn-primary-custom">
+                Kirim Komentar
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+    const items = document.querySelectorAll('.fade-in');
+
+    window.addEventListener('load', () => {
+        items.forEach((el, i) => {
+            setTimeout(() => {
+                el.classList.add('show');
+            }, i * 120);
+        });
+    });
+</script>
+
 @endsection

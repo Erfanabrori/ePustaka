@@ -61,7 +61,7 @@
     </style>
 
     <div class="container">
-        <h2 class="fw-bold mb-4" style="color: var(--primary)"><i class="bi bi-clipboard-check" style="margin-right: 8px;"></i>Riwayat Transaksi Peminjaman</h2>
+        <h2 class="fw-bold mb-4" style="color: var(--primary)"><i class="" style="margin-right: 8px;"></i>Riwayat Peminjaman</h2>
 
         <div class="card-modern">
             <table class="table table-modern">
