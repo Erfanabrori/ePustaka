@@ -121,9 +121,10 @@
 
     <!-- LEFT -->
     <div class="left">
-        <h1>WELCOME</h1>
+        <h1>ePustaka</h1>
+
         <p>
-            Sistem manajemen perpustakaan modern untuk membantu
+            Selamat datang di Sistem manajemen perpustakaan modern untuk membantu
             pengelolaan buku, peminjaman, dan anggota dengan lebih efisien.
         </p>
     </div>
