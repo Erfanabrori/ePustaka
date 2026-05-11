@@ -123,7 +123,7 @@
     <div class="left">
         <h1>DAFTAR</h1>
         <p>
-            Bergabung dengan ePerpus untuk mengakses koleksi buku lengkap
+            Bergabung dengan ePustaka untuk mengakses koleksi buku lengkap
             dan menikmati layanan peminjaman dengan mudah.
         </p>
     </div>
