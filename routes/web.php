@@ -9,30 +9,35 @@ use App\Http\Controllers\BukuController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\WishlistController;
-use App\Http\Controllers\KomentarController; // ✅ FIX UTAMA
+use App\Http\Controllers\KomentarController;
 
 
 Route::get('/', [AuthController::class, 'formLogin']);
 Route::post('/login', [AuthController::class, 'login']);
+
 Route::get('/register', [AuthController::class, 'formRegister']);
 Route::post('/register', [AuthController::class, 'register']);
-Route::get('/logout', [AuthController::class, 'logout']);
 
+Route::get('/logout', [AuthController::class, 'logout']);
 
 Route::middleware(['cek.login'])->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index']);
 
-    // Buku bisa diakses semua user (admin & user biasa)
+    // Bisa diakses semua user
     Route::get('/buku', [BukuController::class, 'index']);
 
-    // Route buku admin (tambah, edit, hapus)
+    // Khusus admin
     Route::middleware(['cek.role'])->group(function () {
+
         Route::get('/buku/tambah', [BukuController::class, 'create']);
         Route::post('/buku/simpan', [BukuController::class, 'store']);
+
         Route::get('/buku/edit/{id}', [BukuController::class, 'edit']);
         Route::put('/buku/update/{id}', [BukuController::class, 'update']);
+
         Route::get('/buku/hapus/{id}', [BukuController::class, 'destroy']);
+
         Route::get('/buku/cetak/{id}', [BukuController::class, 'cetakBarcode']);
         Route::get('/buku/cetak-semua', [BukuController::class, 'cetakSemuaBarcode']);
     });
@@ -42,15 +47,25 @@ Route::middleware(['cek.login'])->group(function () {
     Route::post('/peminjaman/simpan', [PeminjamanController::class, 'store']);
     Route::get('/peminjaman/kembali/{id}', [PeminjamanController::class, 'kembali']);
 
+    /*
+    |--------------------------------------------------------------------------
+    | PROFIL USER
+    |--------------------------------------------------------------------------
+    */
+
     Route::get('/profil', function () {
+
         if (session('role') === 'admin') {
             return redirect('/dashboard');
         }
+
         $user = \App\Models\User::find(session('user_id'));
+
         return view('profil', compact('user'));
     });
 
     Route::post('/profil/update', function (Request $request) {
+
         if (session('role') === 'admin') {
             return redirect('/dashboard');
         }
@@ -60,6 +75,7 @@ Route::middleware(['cek.login'])->group(function () {
         ]);
 
         $user = \App\Models\User::find(session('user_id'));
+
         $user->update([
             'password' => bcrypt($request->password)
         ]);
@@ -67,8 +83,14 @@ Route::middleware(['cek.login'])->group(function () {
         return back()->with('success', 'Password berhasil diubah!');
     });
 
-    // MENU USER
+    /*
+    |--------------------------------------------------------------------------
+    | MENU USER
+    |--------------------------------------------------------------------------
+    */
+
     Route::middleware(['cek.role.user'])->group(function () {
+
         Route::get('/riwayat', [PeminjamanController::class, 'riwayat']);
 
         Route::get('/komentar', [KomentarController::class, 'index']);
@@ -76,14 +98,17 @@ Route::middleware(['cek.login'])->group(function () {
         Route::get('/komentar/edit/{id}', [KomentarController::class, 'edit']);
         Route::post('/komentar/update/{id}', [KomentarController::class, 'update']);
         Route::get('/komentar/hapus/{id}', [KomentarController::class, 'destroy']);
-
         Route::get('/wishlist', [WishlistController::class, 'index']);
         Route::post('/wishlist/tambah', [WishlistController::class, 'store']);
         Route::get('/wishlist/hapus/{id}', [WishlistController::class, 'destroy']);
     });
-
 });
 
+/*
+|--------------------------------------------------------------------------
+| KHUSUS ADMIN
+|--------------------------------------------------------------------------
+*/
 
 Route::middleware(['cek.login', 'cek.role'])->group(function () {
 
@@ -96,11 +121,10 @@ Route::middleware(['cek.login', 'cek.role'])->group(function () {
     Route::get('/user/cetak/{id}', [UserController::class, 'cetakKartu']);
     Route::get('/user/cetak-semua', [UserController::class, 'cetakSemuaKartu']);
 
-    Route::get('/komentar', [KomentarController::class, 'adminIndex']);
-    Route::get('/komentar/{id}', [KomentarController::class, 'adminShow']);
-    Route::get('/komentar/hapus/{id}', [KomentarController::class, 'adminDestroy']);
+    Route::get('/admin/komentar', [KomentarController::class, 'adminIndex']);
+    Route::get('/admin/komentar/{id}', [KomentarController::class, 'adminShow']);
+    Route::get('/admin/komentar/hapus/{id}', [KomentarController::class, 'adminDestroy']);
 
     Route::get('/laporan', [PeminjamanController::class, 'laporan']);
     Route::get('/laporan/cetak', [PeminjamanController::class, 'cetakLaporan']);
-
 });

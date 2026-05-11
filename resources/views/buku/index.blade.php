@@ -155,8 +155,14 @@
                                     <a href="/buku/cetak/{{ $b->id }}" target="_blank"
                                        class="btn-custom btn-primary-custom">Barcode</a>
                                 @else
+                                    <form method="POST" action="/wishlist/tambah" style="display:inline-block; margin:0;">
+                                        @csrf
+                                        <input type="hidden" name="buku_id" value="{{ $b->id }}">
+                                        <button type="submit" class="btn-custom btn-warning-custom">Wishlist</button>
+                                    </form>
+                                    <a href="/komentar?buku_id={{ $b->id }}" class="btn-custom btn-primary-custom">Komentar</a>
                                     <a href="/peminjaman/tambah?buku_id={{ $b->id }}"
-                                       class="btn-custom btn-primary-custom">Pinjam</a>
+                                       class="btn-custom btn-secondary-custom">Pinjam</a>
                                 @endif
                             </td>
                         </tr>

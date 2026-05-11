@@ -72,7 +72,9 @@
                     <select name="buku_id" class="form-control" required>
                         <option value="">-- Pilih Buku --</option>
                         @foreach($buku as $b)
-                            <option value="{{ $b->id }}">{{ $b->judul_buku }} - {{ $b->penulis ?? 'Unknown' }}</option>
+                            <option value="{{ $b->id }}" {{ (old('buku_id') == $b->id || (isset($selectedBukuId) && $selectedBukuId == $b->id)) ? 'selected' : '' }}>
+                                {{ $b->judul_buku }} - {{ $b->penulis ?? 'Unknown' }}
+                            </option>
                         @endforeach
                     </select>
                 </div>

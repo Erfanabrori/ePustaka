@@ -19,8 +19,9 @@ class KomentarController extends Controller
             ->get();
 
         $buku = Buku::all();
+        $selectedBukuId = request('buku_id');
 
-        return view('user.komentar', compact('komentar', 'buku', 'user'));
+        return view('user.komentar', compact('komentar', 'buku', 'user', 'selectedBukuId'));
     }
 
     public function store(Request $request)
