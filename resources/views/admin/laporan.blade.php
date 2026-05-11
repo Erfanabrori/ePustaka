@@ -82,7 +82,7 @@
     <!-- HEADER -->
     <div class="mb-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
         <h3 class="fw-bold m-0" style="color: var(--primary)">
-            📊 Laporan Transaksi
+            Laporan Transaksi
         </h3>
     </div>
 

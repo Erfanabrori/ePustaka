@@ -12,6 +12,7 @@ class Komentar extends Model
         'user_id',
         'buku_id',
         'isi_komentar',
+        'rating',
     ];
 
     public function buku()

@@ -100,7 +100,7 @@
     <!-- HEADER -->
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2 fade-in">
         <h3 class="fw-bold m-0" style="color: var(--primary)">
-            <i class="bi bi-chat-left-text" style="margin-right: 8px;"></i>Manajemen Komentar
+            <i class="" style="margin-right: 8px;"></i>Komentar
         </h3>
     </div>
 
