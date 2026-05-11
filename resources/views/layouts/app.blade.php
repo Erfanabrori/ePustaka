@@ -292,7 +292,7 @@
 
         <a href="/user" class="menu-link {{ request()->is('user*') ? 'active' : '' }}">
             <i class="bi bi-people"></i>
-            <span class="menu-text">Data User</span>
+            <span class="menu-text">Data Pengguna</span>
         </a>
 
         <a href="/buku" class="menu-link {{ request()->is('buku*') ? 'active' : '' }}">
