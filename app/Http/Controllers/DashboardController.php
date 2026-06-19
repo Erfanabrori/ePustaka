@@ -13,14 +13,14 @@ class DashboardController extends Controller
         $userId = session('user_id');
 
         $data = [
-            'totalBuku' => \App\Models\Buku::count(),
-            'totalPeminjaman' => \App\Models\Peminjaman::count(),
-            'totalUser' => \App\Models\User::count(),
+            'totalBuku' => \App\Models\Buku::allRaw()->count(),
+            'totalPeminjaman' => \App\Models\Peminjaman::countAll(),
+            'totalUser' => \App\Models\User::countRaw(),
         ];
 
         // Untuk user biasa, hitung peminjaman mereka
         if ($role !== 'admin' && $userId) {
-            $data['peminjamanSaya'] = \App\Models\Peminjaman::where('user_id', $userId)->count();
+            $data['peminjamanSaya'] = \App\Models\Peminjaman::countByUser($userId);
         }
 
         return view('dashboard', compact('data', 'role'));

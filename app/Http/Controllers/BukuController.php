@@ -10,14 +10,7 @@ class BukuController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Buku::with('penerbit');
-
-        // FIX SEARCH SESUAI DB
-        if ($request->search) {
-            $query->where('judul_buku', 'like', '%' . $request->search . '%');
-        }
-
-        $data = $query->get();
+        $data = Buku::fetchForIndex($request->search);
 
         $role = session('role');
 
@@ -27,7 +20,7 @@ class BukuController extends Controller
     // FIX: kirim data penerbit ke view
     public function create()
     {
-        $penerbit = Penerbit::all();
+        $penerbit = Penerbit::allRaw();
         return view('buku.tambah', compact('penerbit'));
     }
 
@@ -50,15 +43,17 @@ class BukuController extends Controller
 
     public function edit($id)
     {
-        $buku = Buku::findOrFail($id);
-        $penerbit = Penerbit::all();
+        $buku = Buku::findRaw($id);
+        if (!$buku) abort(404);
+        $penerbit = Penerbit::allRaw();
 
         return view('buku.edit', compact('buku', 'penerbit'));
     }
 
     public function update(Request $request, $id)
     {
-        $buku = Buku::findOrFail($id);
+        $buku = Buku::findRaw($id);
+        if (!$buku) abort(404);
 
         $buku->update([
             'judul_buku'      => $request->judul_buku,
@@ -76,21 +71,24 @@ class BukuController extends Controller
 
     public function destroy($id)
     {
-        Buku::findOrFail($id)->delete();
+        $b = Buku::findRaw($id);
+        if (!$b) abort(404);
+        $b->delete();
         return redirect('/buku');
     }
 
     // CETAK BARCODE SATU BUKU
     public function cetakBarcode($id)
     {
-        $buku = Buku::findOrFail($id);
+        $buku = Buku::findRaw($id);
+        if (!$buku) abort(404);
         return view('admin.barcode', compact('buku'));
     }
 
     // CETAK SEMUA BARCODE
     public function cetakSemuaBarcode()
     {
-        $buku = Buku::all();
+        $buku = Buku::allRaw();
         return view('admin.barcode_semua', compact('buku'));
     }
 }

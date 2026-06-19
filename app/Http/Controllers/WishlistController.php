@@ -11,12 +11,10 @@ class WishlistController extends Controller
 {
     public function index()
     {
-        $user = User::find(session('user_id'));
+        $user = User::findRaw(session('user_id'));
+        if (!$user) return redirect('/login');
 
-        $wishlists = Wishlist::with('buku')
-            ->where('user_id', $user->id)
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $wishlists = Wishlist::forUser($user->id);
 
         return view('user.wishlist', compact('wishlists', 'user'));
     }
@@ -28,9 +26,7 @@ class WishlistController extends Controller
         ]);
 
         // cek apakah buku sudah ada di wishlist
-        $exists = Wishlist::where('user_id', session('user_id'))
-            ->where('buku_id', $request->buku_id)
-            ->first();
+        $exists = Wishlist::existsForUserBook(session('user_id'), $request->buku_id);
 
         if ($exists) {
             return back()->with('error', 'Buku sudah ada di wishlist!');
@@ -46,12 +42,12 @@ class WishlistController extends Controller
 
     public function destroy($id)
     {
-        $wishlist = Wishlist::findOrFail($id);
+        $wishlist = Wishlist::findRaw($id);
+
+        if (!$wishlist) abort(404);
 
         if ($wishlist->user_id == session('user_id')) {
-
             $wishlist->delete();
-
             return back()->with('success', 'Wishlist berhasil dihapus!');
         }
 

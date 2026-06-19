@@ -11,14 +11,12 @@ class KomentarController extends Controller
 {
     public function index()
     {
-        $user = User::find(session('user_id'));
+        $user = User::findRaw(session('user_id'));
+        if (!$user) return redirect('/login');
 
-        $komentar = Komentar::with('buku')
-            ->where('user_id', $user->id)
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $komentar = Komentar::forUser($user->id);
 
-        $buku = Buku::all();
+        $buku = Buku::allRaw();
         $selectedBukuId = request('buku_id');
 
         return view('user.komentar', compact('komentar', 'buku', 'user', 'selectedBukuId'));
@@ -38,19 +36,21 @@ class KomentarController extends Controller
 
     public function edit($id)
     {
-        $komentar = Komentar::findOrFail($id);
+        $komentar = Komentar::findRaw($id);
+        if (!$komentar) abort(404);
 
         if ($komentar->user_id != session('user_id')) {
             abort(403);
         }
 
-        $buku = Buku::all();
+        $buku = Buku::allRaw();
         return view('user.komentar.edit', compact('komentar', 'buku'));
     }
 
     public function update(Request $request, $id)
     {
-        $komentar = Komentar::findOrFail($id);
+        $komentar = Komentar::findRaw($id);
+        if (!$komentar) abort(404);
 
         if ($komentar->user_id != session('user_id')) {
             abort(403);
@@ -67,7 +67,8 @@ class KomentarController extends Controller
 
     public function destroy($id)
     {
-        $komentar = Komentar::findOrFail($id);
+        $komentar = Komentar::findRaw($id);
+        if (!$komentar) abort(404);
 
         if ($komentar->user_id == session('user_id')) {
             $komentar->delete();
@@ -80,22 +81,22 @@ class KomentarController extends Controller
     // ADMIN METHODS
     public function adminIndex()
     {
-        $data = Komentar::with('user', 'buku')
-            ->orderBy('created_at', 'desc')
-            ->get();
-
+        $data = Komentar::adminAll();
         return view('admin.komentar.index', compact('data'));
     }
 
     public function adminShow($id)
     {
-        $komentar = Komentar::with('user', 'buku')->findOrFail($id);
+        $komentar = Komentar::findWithRelations($id);
+        if (!$komentar) abort(404);
+
         return view('admin.komentar.show', compact('komentar'));
     }
 
     public function adminDestroy($id)
     {
-        $komentar = Komentar::findOrFail($id);
+        $komentar = Komentar::findRaw($id);
+        if (!$komentar) abort(404);
         $komentar->delete();
         return back()->with('success', 'Komentar berhasil dihapus!');
     }

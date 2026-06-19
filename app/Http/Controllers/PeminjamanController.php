@@ -11,7 +11,7 @@ class PeminjamanController extends Controller
 {
     public function index()
     {
-        $user = User::find(session('user_id'));
+        $user = User::findRaw(session('user_id'));
         $role = session('role');
 
         if (!$user) {
@@ -19,11 +19,9 @@ class PeminjamanController extends Controller
         }
 
         if ($role == 'admin') {
-            $data = Peminjaman::with('buku', 'user')->get();
+            $data = Peminjaman::allWithRelations();
         } else {
-            $data = Peminjaman::with('buku')
-                ->where('user_id', $user->id)
-                ->get();
+            $data = Peminjaman::forUser($user->id);
         }
 
         return view('peminjaman.index', compact('data', 'user', 'role'));
@@ -31,7 +29,7 @@ class PeminjamanController extends Controller
 
     public function create(Request $request)
     {
-        $buku = Buku::all();
+        $buku = Buku::allRaw();
         $selected = $request->buku_id;
 
         return view('peminjaman.tambah', compact('buku', 'selected'));
@@ -43,7 +41,8 @@ class PeminjamanController extends Controller
             'buku_id' => 'required|exists:buku,id',
         ]);
 
-        $buku = Buku::findOrFail($request->buku_id);
+        $buku = Buku::findRaw($request->buku_id);
+        if (!$buku) abort(404);
 
         // 🔥 CEK STOK
         if ($buku->stok <= 0) {
@@ -65,8 +64,9 @@ class PeminjamanController extends Controller
 
     public function kembali(int $id)
     {
-        $data = Peminjaman::findOrFail($id);
-        $user = User::find(session('user_id'));
+        $data = Peminjaman::findRaw($id);
+        if (!$data) abort(404);
+        $user = User::findRaw(session('user_id'));
 
         if (!$user) {
             return redirect('/login');
@@ -82,7 +82,7 @@ class PeminjamanController extends Controller
         }
 
         // 🔥 TAMBAH STOK
-        $buku = Buku::find($data->buku_id);
+        $buku = Buku::findRaw($data->buku_id);
         if ($buku) {
             $buku->increment('stok');
         }
@@ -97,45 +97,24 @@ class PeminjamanController extends Controller
 
     public function riwayat()
     {
-        $user = User::find(session('user_id'));
+        $user = User::findRaw(session('user_id'));
 
-        $riwayat = Peminjaman::with('buku')
-            ->where('user_id', $user->id)
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $riwayat = Peminjaman::forUser($user->id);
 
         return view('user.riwayat', compact('riwayat', 'user'));
     }
 
     public function laporan(Request $request)
     {
-        $query = Peminjaman::with('buku', 'user');
-
-        if ($request->bulan) {
-            $query->whereMonth('tanggal_pinjam', $request->bulan);
-        }
-        if ($request->tahun) {
-            $query->whereYear('tanggal_pinjam', $request->tahun);
-        }
-
-        $data = $query->orderBy('tanggal_pinjam', 'desc')->get();
-        $users = User::where('role', 'user')->get();
+        $data = Peminjaman::report($request->bulan, $request->tahun);
+        $users = \App\Models\User::allByRoleRaw('user');
 
         return view('admin.laporan', compact('data', 'users'));
     }
 
     public function cetakLaporan(Request $request)
     {
-        $query = Peminjaman::with('buku', 'user');
-
-        if ($request->bulan) {
-            $query->whereMonth('tanggal_pinjam', $request->bulan);
-        }
-        if ($request->tahun) {
-            $query->whereYear('tanggal_pinjam', $request->tahun);
-        }
-
-        $data = $query->orderBy('tanggal_pinjam', 'desc')->get();
+        $data = Peminjaman::report($request->bulan, $request->tahun);
 
         return view('admin.laporan_cetak', compact('data'));
     }
