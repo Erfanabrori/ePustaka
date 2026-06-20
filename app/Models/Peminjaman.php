@@ -39,8 +39,8 @@ class Peminjaman extends Model
         $userIds = $items->pluck('user_id')->unique()->filter()->all();
 
         if (!empty($bukuIds)) {
-            $placeholders = implode(',', array_fill(0, count($bukuIds), '?'));
-            $pRows = DB::select("SELECT * FROM buku WHERE id IN ($placeholders)", $bukuIds);
+            $ids = implode(',', array_map('intval', $bukuIds));
+            $pRows = DB::select("SELECT * FROM buku WHERE id IN ($ids)");
             $bukus = Buku::hydrate($pRows)->keyBy('id');
             foreach ($items as $it) {
                 $it->setRelation('buku', $bukus->get($it->buku_id) ?? null);
@@ -48,8 +48,8 @@ class Peminjaman extends Model
         }
 
         if (!empty($userIds)) {
-            $placeholders = implode(',', array_fill(0, count($userIds), '?'));
-            $uRows = DB::select("SELECT * FROM users WHERE id IN ($placeholders)", $userIds);
+            $ids = implode(',', array_map('intval', $userIds));
+            $uRows = DB::select("SELECT * FROM users WHERE id IN ($ids)");
             $users = User::hydrate($uRows)->keyBy('id');
             foreach ($items as $it) {
                 $it->setRelation('user', $users->get($it->user_id) ?? null);
@@ -66,8 +66,8 @@ class Peminjaman extends Model
         $bukuIds = $items->pluck('buku_id')->unique()->filter()->all();
 
         if (!empty($bukuIds)) {
-            $placeholders = implode(',', array_fill(0, count($bukuIds), '?'));
-            $pRows = DB::select("SELECT * FROM buku WHERE id IN ($placeholders)", $bukuIds);
+            $ids = implode(',', array_map('intval', $bukuIds));
+            $pRows = DB::select("SELECT * FROM buku WHERE id IN ($ids)");
             $bukus = Buku::hydrate($pRows)->keyBy('id');
             foreach ($items as $it) {
                 $it->setRelation('buku', $bukus->get($it->buku_id) ?? null);
@@ -95,11 +95,11 @@ class Peminjaman extends Model
         $params = [];
         $conds = [];
         if ($bulan) {
-            $conds[] = 'MONTH(tanggal_pinjam) = ?';
+            $conds[] = 'EXTRACT(MONTH FROM tanggal_pinjam) = ?';
             $params[] = $bulan;
         }
         if ($tahun) {
-            $conds[] = 'YEAR(tanggal_pinjam) = ?';
+            $conds[] = 'EXTRACT(YEAR FROM tanggal_pinjam) = ?';
             $params[] = $tahun;
         }
         if ($conds) $sql .= ' WHERE ' . implode(' AND ', $conds);
@@ -112,8 +112,8 @@ class Peminjaman extends Model
         $userIds = $items->pluck('user_id')->unique()->filter()->all();
 
         if (!empty($bukuIds)) {
-            $placeholders = implode(',', array_fill(0, count($bukuIds), '?'));
-            $pRows = DB::select("SELECT * FROM buku WHERE id IN ($placeholders)", $bukuIds);
+            $ids = implode(',', array_map('intval', $bukuIds));
+            $pRows = DB::select("SELECT * FROM buku WHERE id IN ($ids)");
             $bukus = Buku::hydrate($pRows)->keyBy('id');
             foreach ($items as $it) {
                 $it->setRelation('buku', $bukus->get($it->buku_id) ?? null);
@@ -121,8 +121,8 @@ class Peminjaman extends Model
         }
 
         if (!empty($userIds)) {
-            $placeholders = implode(',', array_fill(0, count($userIds), '?'));
-            $uRows = DB::select("SELECT * FROM users WHERE id IN ($placeholders)", $userIds);
+            $ids = implode(',', array_map('intval', $userIds));
+            $uRows = DB::select("SELECT * FROM users WHERE id IN ($ids)");
             $users = User::hydrate($uRows)->keyBy('id');
             foreach ($items as $it) {
                 $it->setRelation('user', $users->get($it->user_id) ?? null);
