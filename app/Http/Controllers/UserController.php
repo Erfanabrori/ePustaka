@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use App\Helpers\VigenereHelper;
+
 
 class UserController extends Controller
 {
@@ -24,7 +25,8 @@ class UserController extends Controller
         User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password)
+            'password' => VigenereHelper::encrypt($request->password),
+            'role' => 'user'
         ]);
 
         return redirect('/user');
@@ -48,7 +50,7 @@ class UserController extends Controller
         ];
 
         if ($request->password) {
-            $data['password'] = Hash::make($request->password);
+            $data['password'] = VigenereHelper::encrypt($request->password);
         }
 
         $user->update($data);

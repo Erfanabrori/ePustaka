@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Pengguna;
-use Illuminate\Support\Facades\Hash;
+use App\Helpers\VigenereHelper;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
@@ -18,7 +18,7 @@ class AuthController extends Controller
     {
         $user = \App\Models\User::findByEmailRaw($request->email);
 
-        if ($user && Hash::check($request->password, $user->password)) {
+        if ($user && $request->password === VigenereHelper::decrypt($user->password)) {
 
             session([
                 'user_id' => $user->id,
@@ -54,7 +54,7 @@ class AuthController extends Controller
         \App\Models\User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => bcrypt($request->password),
+            'password' => VigenereHelper::encrypt($request->password),
             'role' => 'user'
         ]);
 
