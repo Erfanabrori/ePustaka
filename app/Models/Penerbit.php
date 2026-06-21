@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 
 class Penerbit extends Model
 {
@@ -19,7 +18,6 @@ class Penerbit extends Model
 
     public static function allRaw()
     {
-        $rows = DB::select('SELECT * FROM penerbit ORDER BY id ASC');
-        return self::hydrate($rows);
+        return self::orderBy('id', 'asc')->get();
     }
 }
