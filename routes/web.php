@@ -10,6 +10,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\KomentarController;
+use App\Helpers\VigenereHelper;
 
 
 Route::get('/', [AuthController::class, 'formLogin']);
@@ -77,7 +78,7 @@ Route::middleware(['cek.login'])->group(function () {
         $user = \App\Models\User::find(session('user_id'));
 
         $user->update([
-            'password' => bcrypt($request->password)
+            'password' => VigenereHelper::encrypt($request->password)
         ]);
 
         return back()->with('success', 'Password berhasil diubah!');
