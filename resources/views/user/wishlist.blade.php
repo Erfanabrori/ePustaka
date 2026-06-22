@@ -169,19 +169,19 @@
                             </td>
 
                             <td>
-                                {{ optional($w->buku)->judul_buku ?? '-' }}
+                                {{ $w->judul_buku ?? '-' }}
                             </td>
 
                             <td>
-                                {{ optional($w->buku)->isbn ?? '-' }}
+                                {{ $w->isbn ?? '-' }}
                             </td>
 
                             <td>
-                                {{ optional($w->buku)->tahun_terbit ?? '-' }}
+                                {{ $w->tahun_terbit ?? '-' }}
                             </td>
 
                             <td>
-                                {{ optional(optional($w->buku)->penerbit)->nama_penerbit ?? '-' }}
+                                {{ $w->nama_penerbit ?? '-' }}
                             </td>
 
                             <td>

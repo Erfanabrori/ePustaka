@@ -3,8 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Buku;
-use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class Wishlist extends Model
 {
@@ -15,33 +14,126 @@ class Wishlist extends Model
         'buku_id'
     ];
 
-    public function buku()
-    {
-        return $this->belongsTo(Buku::class, 'buku_id');
-    }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
-
+    /*
+    |--------------------------------------------------------------------------
+    | AMBIL WISHLIST BERDASARKAN USER + DATA BUKU
+    |--------------------------------------------------------------------------
+    */
     public static function forUser($userId)
     {
-        return self::with('buku')
-            ->where('user_id', $userId)
-            ->orderBy('created_at', 'desc')
-            ->get();
+        return DB::select("
+            SELECT
+                wishlists.*,
+                buku.judul_buku,
+                buku.sub_judul,
+                buku.isbn,
+                buku.tahun_terbit,
+                buku.stok
+            FROM wishlists
+            LEFT JOIN buku
+                ON wishlists.buku_id = buku.id
+            WHERE wishlists.user_id = ?
+            ORDER BY wishlists.created_at DESC
+        ", [$userId]);
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | CEK APAKAH BUKU SUDAH ADA DI WISHLIST USER
+    |--------------------------------------------------------------------------
+    */
     public static function existsForUserBook($userId, $bukuId)
     {
-        return self::where('user_id', $userId)
-            ->where('buku_id', $bukuId)
-            ->exists();
+        $data = DB::select("
+            SELECT id
+            FROM wishlists
+            WHERE user_id = ?
+            AND buku_id = ?
+            LIMIT 1
+        ", [$userId, $bukuId]);
+
+        return !empty($data);
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | CARI WISHLIST BERDASARKAN ID
+    |--------------------------------------------------------------------------
+    */
     public static function findRaw($id)
     {
-        return self::find($id);
+        $data = DB::select("
+            SELECT *
+            FROM wishlists
+            WHERE id = ?
+            LIMIT 1
+        ", [$id]);
+
+        return $data[0] ?? null;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | CARI WISHLIST BERDASARKAN USER DAN BUKU
+    |--------------------------------------------------------------------------
+    */
+    public static function findByUserBookRaw($userId, $bukuId)
+    {
+        $data = DB::select("
+            SELECT *
+            FROM wishlists
+            WHERE user_id = ?
+            AND buku_id = ?
+            LIMIT 1
+        ", [$userId, $bukuId]);
+
+        return $data[0] ?? null;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | TAMBAH WISHLIST
+    |--------------------------------------------------------------------------
+    */
+    public static function insertRaw($data)
+    {
+        return DB::insert("
+            INSERT INTO wishlists (
+                user_id,
+                buku_id,
+                created_at,
+                updated_at
+            ) VALUES (?, ?, NOW(), NOW())
+        ", [
+            $data['user_id'],
+            $data['buku_id']
+        ]);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | HAPUS WISHLIST BERDASARKAN ID
+    |--------------------------------------------------------------------------
+    */
+    public static function deleteRaw($id)
+    {
+        return DB::delete("
+            DELETE FROM wishlists
+            WHERE id = ?
+        ", [$id]);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | HAPUS WISHLIST BERDASARKAN USER DAN BUKU
+    |--------------------------------------------------------------------------
+    */
+    public static function deleteByUserBookRaw($userId, $bukuId)
+    {
+        return DB::delete("
+            DELETE FROM wishlists
+            WHERE user_id = ?
+            AND buku_id = ?
+        ", [$userId, $bukuId]);
     }
 }

@@ -133,12 +133,12 @@
         <div class="header-section">
             <div class="info-box">
                 <div class="info-label">Tanggal Komentar</div>
-                <div class="info-value">{{ $komentar->created_at->format('d F Y H:i') }}</div>
+                <div class="info-value">{{ $komentar->created_at ? \Carbon\Carbon::parse($komentar->created_at)->format('d F Y H:i') : '-' }}</div>
             </div>
 
             <div class="info-box">
                 <div class="info-label">Terakhir Diupdate</div>
-                <div class="info-value">{{ $komentar->updated_at->format('d F Y H:i') }}</div>
+                <div class="info-value">{{ $komentar->updated_at ? \Carbon\Carbon::parse($komentar->updated_at)->format('d F Y H:i') : '-' }}</div>
             </div>
         </div>
 

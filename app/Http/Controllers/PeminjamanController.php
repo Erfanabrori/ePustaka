@@ -50,10 +50,20 @@ class PeminjamanController extends Controller
         }
 
         // 🔥 KURANGI STOK
-        $buku->decrement('stok');
+        Buku::updateRaw($request->buku_id, [
+            'judul_buku' => $buku->judul_buku,
+            'isbn' => $buku->isbn,
+            'tahun_terbit' => $buku->tahun_terbit,
+            'jumlah_halaman' => $buku->jumlah_halaman,
+            'penerbit_id' => $buku->penerbit_id,
+            'tempat_terbit' => $buku->tempat_terbit,
+            'edisi' => $buku->edisi,
+            'deskripsi' => $buku->deskripsi,
+            'stok' => $buku->stok - 1
+        ]);
 
         // 🔥 SIMPAN PEMINJAMAN
-        Peminjaman::create([
+        Peminjaman::insertRaw([
             'user_id' => session('user_id'),
             'buku_id' => $request->buku_id,
             'tanggal_pinjam' => now()
@@ -84,11 +94,24 @@ class PeminjamanController extends Controller
         // 🔥 TAMBAH STOK
         $buku = Buku::findRaw($data->buku_id);
         if ($buku) {
-            $buku->increment('stok');
+            Buku::updateRaw($data->buku_id, [
+                'judul_buku' => $buku->judul_buku,
+                'isbn' => $buku->isbn,
+                'tahun_terbit' => $buku->tahun_terbit,
+                'jumlah_halaman' => $buku->jumlah_halaman,
+                'penerbit_id' => $buku->penerbit_id,
+                'tempat_terbit' => $buku->tempat_terbit,
+                'edisi' => $buku->edisi,
+                'deskripsi' => $buku->deskripsi,
+                'stok' => $buku->stok + 1
+            ]);
         }
 
         // 🔥 UPDATE STATUS KEMBALI
-        $data->update([
+        Peminjaman::updateRaw($id, [
+            'user_id' => $data->user_id,
+            'buku_id' => $data->buku_id,
+            'tanggal_pinjam' => $data->tanggal_pinjam,
             'tanggal_kembali' => now()
         ]);
 

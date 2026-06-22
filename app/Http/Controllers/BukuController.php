@@ -27,7 +27,7 @@ class BukuController extends Controller
     // FIX: jangan pakai all() langsung (biar aman)
     public function store(Request $request)
     {
-        Buku::create([
+        Buku::insertRaw([
             'judul_buku'      => $request->judul_buku,
             'isbn'            => $request->isbn,
             'tahun_terbit'    => $request->tahun_terbit,
@@ -55,7 +55,7 @@ class BukuController extends Controller
         $buku = Buku::findRaw($id);
         if (!$buku) abort(404);
 
-        $buku->update([
+        Buku::updateRaw($id, [
             'judul_buku'      => $request->judul_buku,
             'isbn'            => $request->isbn,
             'tahun_terbit'    => $request->tahun_terbit,
@@ -73,7 +73,7 @@ class BukuController extends Controller
     {
         $b = Buku::findRaw($id);
         if (!$b) abort(404);
-        $b->delete();
+        Buku::deleteRaw($id);
         return redirect('/buku');
     }
 

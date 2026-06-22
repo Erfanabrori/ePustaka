@@ -51,7 +51,7 @@ class AuthController extends Controller
             'password' => 'required|min:6|confirmed'
         ]);
 
-        \App\Models\User::create([
+        \App\Models\User::insertRaw([
             'name' => $request->name,
             'email' => $request->email,
             'password' => VigenereHelper::encrypt($request->password),

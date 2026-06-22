@@ -2,32 +2,29 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 
-#[Fillable(['name', 'email', 'password'])]
-#[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected $fillable = [
-    'name',
-    'email',
-    'password',
-    'role',
-];
+        'name',
+        'email',
+        'password',
+        'role',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
     protected function casts(): array
     {
         return [
@@ -35,30 +32,171 @@ class User extends Authenticatable
         ];
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | CARI USER BERDASARKAN EMAIL
+    |--------------------------------------------------------------------------
+    | Dibuat sebagai object User agar Hash::check() dan session login tetap aman.
+    */
     public static function findByEmailRaw($email)
     {
-        return self::where('email', $email)->first();
+        $data = DB::select("
+            SELECT *
+            FROM users
+            WHERE email = ?
+            LIMIT 1
+        ", [$email]);
+
+        if (empty($data)) {
+            return null;
+        }
+
+        return self::hydrate([
+            (array) $data[0]
+        ])->first();
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | CARI USER BERDASARKAN ID
+    |--------------------------------------------------------------------------
+    */
     public static function findRaw($id)
     {
-        return self::find($id);
+        $data = DB::select("
+            SELECT *
+            FROM users
+            WHERE id = ?
+            LIMIT 1
+        ", [$id]);
+
+        if (empty($data)) {
+            return null;
+        }
+
+        return self::hydrate([
+            (array) $data[0]
+        ])->first();
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | HITUNG TOTAL USER
+    |--------------------------------------------------------------------------
+    */
     public static function countRaw()
     {
-        return self::count();
+        $data = DB::select("
+            SELECT COUNT(*) AS total
+            FROM users
+        ");
+
+        return $data[0]->total ?? 0;
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | AMBIL USER BERDASARKAN ROLE
+    |--------------------------------------------------------------------------
+    */
     public static function allByRoleRaw($role)
     {
-        return self::where('role', $role)
-            ->orderBy('id', 'asc')
-            ->get();
+        return DB::select("
+            SELECT *
+            FROM users
+            WHERE role = ?
+            ORDER BY id ASC
+        ", [$role]);
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | AMBIL SEMUA USER
+    |--------------------------------------------------------------------------
+    */
     public static function allRaw()
     {
-        return self::orderBy('id', 'asc')->get();
+        return DB::select("
+            SELECT *
+            FROM users
+            ORDER BY id ASC
+        ");
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | TAMBAH USER
+    |--------------------------------------------------------------------------
+    */
+    public static function insertRaw($data)
+    {
+        return DB::insert("
+            INSERT INTO users (
+                name,
+                email,
+                password,
+                role,
+                created_at,
+                updated_at
+            ) VALUES (?, ?, ?, ?, NOW(), NOW())
+        ", [
+            $data['name'],
+            $data['email'],
+            $data['password'],
+            $data['role'] ?? 'user',
+        ]);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | UPDATE USER
+    |--------------------------------------------------------------------------
+    */
+    public static function updateRaw($id, $data)
+    {
+        return DB::update("
+            UPDATE users SET
+                name = ?,
+                email = ?,
+                role = ?,
+                updated_at = NOW()
+            WHERE id = ?
+        ", [
+            $data['name'],
+            $data['email'],
+            $data['role'] ?? 'user',
+            $id
+        ]);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | UPDATE PASSWORD USER
+    |--------------------------------------------------------------------------
+    */
+    public static function updatePasswordRaw($id, $password)
+    {
+        return DB::update("
+            UPDATE users SET
+                password = ?,
+                updated_at = NOW()
+            WHERE id = ?
+        ", [
+            $password,
+            $id
+        ]);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | HAPUS USER
+    |--------------------------------------------------------------------------
+    */
+    public static function deleteRaw($id)
+    {
+        return DB::delete("
+            DELETE FROM users
+            WHERE id = ?
+        ", [$id]);
     }
 }

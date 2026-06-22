@@ -3,8 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Buku;
-use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class Peminjaman extends Model
 {
@@ -17,60 +16,189 @@ class Peminjaman extends Model
         'tanggal_kembali'
     ];
 
-    // RELASI KE BUKU (WAJIB HURUF KECIL)
-    public function buku()
-    {
-        return $this->belongsTo(Buku::class, 'buku_id');
-    }
-
-    // RELASI KE USER
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
-
+    /*
+    |--------------------------------------------------------------------------
+    | AMBIL SEMUA PEMINJAMAN + BUKU + USER
+    |--------------------------------------------------------------------------
+    */
     public static function allWithRelations()
     {
-        return self::with(['buku', 'user'])
-            ->orderBy('id', 'asc')
-            ->get();
+        return DB::select("
+            SELECT
+                peminjaman.*,
+                buku.judul_buku,
+                users.name AS nama_user,
+                users.email AS email_user
+            FROM peminjaman
+            LEFT JOIN buku
+                ON peminjaman.buku_id = buku.id
+            LEFT JOIN users
+                ON peminjaman.user_id = users.id
+            ORDER BY peminjaman.id ASC
+        ");
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | AMBIL PEMINJAMAN BERDASARKAN USER + DATA BUKU
+    |--------------------------------------------------------------------------
+    */
     public static function forUser($userId)
     {
-        return self::with('buku')
-            ->where('user_id', $userId)
-            ->orderBy('created_at', 'desc')
-            ->get();
+        return DB::select("
+            SELECT
+                peminjaman.*,
+                buku.judul_buku
+            FROM peminjaman
+            LEFT JOIN buku
+                ON peminjaman.buku_id = buku.id
+            WHERE peminjaman.user_id = ?
+            ORDER BY peminjaman.created_at DESC
+        ", [$userId]);
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | HITUNG SELURUH DATA PEMINJAMAN
+    |--------------------------------------------------------------------------
+    */
     public static function countAll()
     {
-        return self::count();
+        $data = DB::select("
+            SELECT COUNT(*) AS total
+            FROM peminjaman
+        ");
+
+        return $data[0]->total ?? 0;
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | HITUNG PEMINJAMAN BERDASARKAN USER
+    |--------------------------------------------------------------------------
+    */
     public static function countByUser($userId)
     {
-        return self::where('user_id', $userId)->count();
+        $data = DB::select("
+            SELECT COUNT(*) AS total
+            FROM peminjaman
+            WHERE user_id = ?
+        ", [$userId]);
+
+        return $data[0]->total ?? 0;
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | LAPORAN PEMINJAMAN BERDASARKAN BULAN DAN TAHUN
+    |--------------------------------------------------------------------------
+    */
     public static function report($bulan = null, $tahun = null)
     {
-        $query = self::with(['buku', 'user']);
+        $sql = "
+        SELECT
+            peminjaman.*,
+            buku.judul_buku,
+            users.name AS nama_user,
+            users.email AS email_user
+        FROM peminjaman
+        LEFT JOIN buku ON peminjaman.buku_id = buku.id
+        LEFT JOIN users ON peminjaman.user_id = users.id
+        WHERE 1 = 1
+    ";
+
+        $params = [];
 
         if ($bulan) {
-            $query->whereMonth('tanggal_pinjam', $bulan);
+            $sql .= " AND EXTRACT(MONTH FROM peminjaman.tanggal_pinjam) = ? ";
+            $params[] = $bulan;
         }
 
         if ($tahun) {
-            $query->whereYear('tanggal_pinjam', $tahun);
+            $sql .= " AND EXTRACT(YEAR FROM peminjaman.tanggal_pinjam) = ? ";
+            $params[] = $tahun;
         }
 
-        return $query->orderBy('tanggal_pinjam', 'desc')->get();
+        $sql .= " ORDER BY peminjaman.tanggal_pinjam DESC ";
+
+        return DB::select($sql, $params);
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | CARI PEMINJAMAN BERDASARKAN ID
+    |--------------------------------------------------------------------------
+    */
     public static function findRaw($id)
     {
-        return self::find($id);
+        $data = DB::select("
+            SELECT *
+            FROM peminjaman
+            WHERE id = ?
+            LIMIT 1
+        ", [$id]);
+
+        return $data[0] ?? null;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | TAMBAH DATA PEMINJAMAN
+    |--------------------------------------------------------------------------
+    */
+    public static function insertRaw($data)
+    {
+        return DB::insert("
+            INSERT INTO peminjaman (
+                user_id,
+                buku_id,
+                tanggal_pinjam,
+                tanggal_kembali,
+                created_at,
+                updated_at
+            ) VALUES (?, ?, ?, ?, NOW(), NOW())
+        ", [
+            $data['user_id'],
+            $data['buku_id'],
+            $data['tanggal_pinjam'],
+            $data['tanggal_kembali'] ?? null
+        ]);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | UPDATE DATA PEMINJAMAN
+    |--------------------------------------------------------------------------
+    */
+    public static function updateRaw($id, $data)
+    {
+        return DB::update("
+            UPDATE peminjaman SET
+                user_id = ?,
+                buku_id = ?,
+                tanggal_pinjam = ?,
+                tanggal_kembali = ?,
+                updated_at = NOW()
+            WHERE id = ?
+        ", [
+            $data['user_id'],
+            $data['buku_id'],
+            $data['tanggal_pinjam'],
+            $data['tanggal_kembali'] ?? null,
+            $id
+        ]);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | HAPUS DATA PEMINJAMAN
+    |--------------------------------------------------------------------------
+    */
+    public static function deleteRaw($id)
+    {
+        return DB::delete("
+            DELETE FROM peminjaman
+            WHERE id = ?
+        ", [$id]);
     }
 }

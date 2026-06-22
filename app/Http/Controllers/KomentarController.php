@@ -24,7 +24,7 @@ class KomentarController extends Controller
 
     public function store(Request $request)
     {
-        Komentar::create([
+        Komentar::insertRaw([
             'user_id' => session('user_id'),
             'buku_id' => $request->buku_id,
             'isi_komentar' => $request->komentar,
@@ -56,7 +56,7 @@ class KomentarController extends Controller
             abort(403);
         }
 
-        $komentar->update([
+        Komentar::updateRaw($id, [
             'buku_id' => $request->buku_id,
             'isi_komentar' => $request->komentar,
             'rating' => $request->rating ?? null
@@ -71,7 +71,7 @@ class KomentarController extends Controller
         if (!$komentar) abort(404);
 
         if ($komentar->user_id == session('user_id')) {
-            $komentar->delete();
+            Komentar::deleteRaw($id);
             return back()->with('success', 'Komentar dihapus!');
         }
 
@@ -97,7 +97,7 @@ class KomentarController extends Controller
     {
         $komentar = Komentar::findRaw($id);
         if (!$komentar) abort(404);
-        $komentar->delete();
+        Komentar::deleteRaw($id);
         return back()->with('success', 'Komentar berhasil dihapus!');
     }
 }

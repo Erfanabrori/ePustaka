@@ -13,7 +13,7 @@ class DashboardController extends Controller
         $userId = session('user_id');
 
         $data = [
-            'totalBuku' => \App\Models\Buku::allRaw()->count(),
+            'totalBuku' => count(\App\Models\Buku::allRaw()),
             'totalPeminjaman' => \App\Models\Peminjaman::countAll(),
             'totalUser' => \App\Models\User::countRaw(),
         ];

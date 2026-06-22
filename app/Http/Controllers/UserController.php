@@ -22,7 +22,7 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        User::create([
+        User::insertRaw([
             'name' => $request->name,
             'email' => $request->email,
             'password' => VigenereHelper::encrypt($request->password),
@@ -44,16 +44,15 @@ class UserController extends Controller
         $user = User::findRaw($id);
         if (!$user) abort(404);
 
-        $data = [
+        User::updateRaw($id, [
             'name' => $request->name,
-            'email' => $request->email
-        ];
+            'email' => $request->email,
+            'role' => $user->role
+        ]);
 
         if ($request->password) {
-            $data['password'] = VigenereHelper::encrypt($request->password);
+            User::updatePasswordRaw($id, VigenereHelper::encrypt($request->password));
         }
-
-        $user->update($data);
 
         return redirect('/user');
     }
@@ -62,7 +61,7 @@ class UserController extends Controller
     {
         $u = User::findRaw($id);
         if (!$u) abort(404);
-        $u->delete();
+        User::deleteRaw($id);
         return redirect('/user');
     }
 

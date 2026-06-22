@@ -32,7 +32,7 @@ class WishlistController extends Controller
             return back()->with('error', 'Buku sudah ada di wishlist!');
         }
 
-        Wishlist::create([
+        Wishlist::insertRaw([
             'user_id' => session('user_id'),
             'buku_id' => $request->buku_id
         ]);
@@ -47,7 +47,7 @@ class WishlistController extends Controller
         if (!$wishlist) abort(404);
 
         if ($wishlist->user_id == session('user_id')) {
-            $wishlist->delete();
+            Wishlist::deleteRaw($id);
             return back()->with('success', 'Wishlist berhasil dihapus!');
         }
 

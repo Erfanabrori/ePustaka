@@ -128,7 +128,6 @@
                         <th>Penerbit</th>
                         <th>Tempat</th>
                         <th>Edisi</th>
-                        <th>Panggil</th>
                         <th>Stok</th>
                         <th>Aksi</th>
                     </tr>
@@ -141,10 +140,9 @@
                             <td>{{ $b->isbn ?? '-' }}</td>
                             <td>{{ $b->tahun_terbit ?? '-' }}</td>
                             <td>{{ $b->jumlah_halaman ?? '-' }}</td>
-                            <td>{{ optional($b->penerbit)->nama_penerbit ?? '-' }}</td>
+                            <td>{{ $b->nama_penerbit ?? '-' }}</td>
                             <td>{{ $b->tempat_terbit ?? '-' }}</td>
                             <td>{{ $b->edisi ?? '-' }}</td>
-                            <td>{{ $b->nomor_panggil ?? '-' }}</td>
                             <td><b>{{ $b->stok ?? 0 }}</b></td>
 
                             <td class="action-buttons">

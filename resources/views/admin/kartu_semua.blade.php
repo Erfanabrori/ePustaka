@@ -84,7 +84,7 @@
             </tr>
             <tr>
                 <td><strong>Terdaftar</strong></td>
-                <td>: {{ $user->created_at->format('d-m-Y') }}</td>
+                <td>: {{ $user->created_at ? \Carbon\Carbon::parse($user->created_at)->format('d-m-Y') : '-' }}/td>
             </tr>
         </table>
 

@@ -61,7 +61,8 @@
     </style>
 
     <div class="container">
-        <h2 class="fw-bold mb-4" style="color: var(--primary)"><i class="" style="margin-right: 8px;"></i>Riwayat Peminjaman</h2>
+        <h2 class="fw-bold mb-4" style="color: var(--primary)"><i class="" style="margin-right: 8px;"></i>Riwayat
+            Peminjaman</h2>
 
         <div class="card-modern">
             <table class="table table-modern">
@@ -78,11 +79,19 @@
                     @forelse($riwayat as $r)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ optional($r->buku)->judul_buku ?? '-' }}</td>
-                            <td>{{ $r->tanggal_pinjam ? \Carbon\Carbon::parse($r->tanggal_pinjam)->format('d-m-Y') : '-' }}</td>
-                            <td>{{ $r->tanggal_kembali ? \Carbon\Carbon::parse($r->tanggal_kembali)->format('d-m-Y') : '-' }}</td>
+
+                            <td>{{ $r->judul_buku ?? '-' }}</td>
+
                             <td>
-                                @if($r->tanggal_kembali)
+                                {{ $r->tanggal_pinjam ? \Carbon\Carbon::parse($r->tanggal_pinjam)->format('d-m-Y') : '-' }}
+                            </td>
+
+                            <td>
+                                {{ $r->tanggal_kembali ? \Carbon\Carbon::parse($r->tanggal_kembali)->format('d-m-Y') : '-' }}
+                            </td>
+
+                            <td>
+                                @if ($r->tanggal_kembali)
                                     <span class="badge-selesai">Selesai</span>
                                 @else
                                     <span class="badge-aktif">Dipinjam</span>
@@ -91,7 +100,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="text-center">Belum ada riwayat peminjaman</td>
+                            <td colspan="5" class="text-center">Tidak ada riwayat</td>
                         </tr>
                     @endforelse
                 </tbody>
