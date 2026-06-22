@@ -18,6 +18,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'foto',
     ];
 
     protected $hidden = [
@@ -136,14 +137,16 @@ class User extends Authenticatable
                 email,
                 password,
                 role,
+                foto,
                 created_at,
                 updated_at
-            ) VALUES (?, ?, ?, ?, NOW(), NOW())
+            ) VALUES (?, ?, ?, ?, ?, NOW(), NOW())
         ", [
             $data['name'],
             $data['email'],
             $data['password'],
             $data['role'] ?? 'user',
+            $data['foto'] ?? null,
         ]);
     }
 
@@ -159,12 +162,14 @@ class User extends Authenticatable
                 name = ?,
                 email = ?,
                 role = ?,
+                foto = ?,
                 updated_at = NOW()
             WHERE id = ?
         ", [
             $data['name'],
             $data['email'],
             $data['role'] ?? 'user',
+            $data['foto'] ?? null,
             $id
         ]);
     }

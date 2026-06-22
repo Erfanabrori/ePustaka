@@ -55,33 +55,60 @@ Route::middleware(['cek.login'])->group(function () {
     */
 
     Route::get('/profil', function () {
-
-        if (session('role') === 'admin') {
-            return redirect('/dashboard');
+        $user = \App\Models\User::findRaw(session('user_id'));
+        if (!$user) {
+            return redirect('/logout');
         }
-
-        $user = \App\Models\User::find(session('user_id'));
 
         return view('profil', compact('user'));
     });
 
     Route::post('/profil/update', function (Request $request) {
-
-        if (session('role') === 'admin') {
-            return redirect('/dashboard');
+        $user = \App\Models\User::findRaw(session('user_id'));
+        if (!$user) {
+            return redirect('/logout');
         }
 
-        $request->validate([
-            'password' => 'required|min:6|confirmed'
+        $rules = [
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
+        ];
+
+        if ($request->filled('password')) {
+            $rules['password'] = 'min:6|confirmed';
+        }
+
+        $request->validate($rules);
+
+        $fotoName = $user->foto;
+        if ($request->hasFile('foto')) {
+            $file = $request->file('foto');
+            $folder = public_path('uploads/profiles');
+            if (!file_exists($folder)) {
+                mkdir($folder, 0755, true);
+            }
+            $newFotoName = uniqid('foto_') . '.' . $file->getClientOriginalExtension();
+            $file->move($folder, $newFotoName);
+
+            if ($fotoName && file_exists($folder . '/' . $fotoName)) {
+                @unlink($folder . '/' . $fotoName);
+            }
+            $fotoName = $newFotoName;
+        }
+
+        \App\Models\User::updateRaw($user->id, [
+            'name' => $request->name,
+            'email' => $request->email,
+            'role' => $user->role,
+            'foto' => $fotoName,
         ]);
 
-        $user = \App\Models\User::find(session('user_id'));
+        if ($request->filled('password')) {
+            \App\Models\User::updatePasswordRaw($user->id, VigenereHelper::encrypt($request->password));
+        }
 
-        $user->update([
-            'password' => VigenereHelper::encrypt($request->password)
-        ]);
-
-        return back()->with('success', 'Password berhasil diubah!');
+        return back()->with('success', 'Profil berhasil diubah!');
     });
 
     /*

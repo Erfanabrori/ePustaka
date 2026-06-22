@@ -85,8 +85,13 @@
 
     <!-- FORM -->
     <div class="card-modern">
-        <form method="POST" action="/user/simpan">
+        <form method="POST" action="/user/simpan" enctype="multipart/form-data">
             @csrf
+
+            <div class="form-group">
+                <label class="label">Foto Profil</label>
+                <input type="file" name="foto" class="input-modern" accept="image/*">
+            </div>
 
             <div class="form-group">
                 <label class="label">Nama Lengkap</label>

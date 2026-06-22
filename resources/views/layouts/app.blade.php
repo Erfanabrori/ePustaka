@@ -151,10 +151,21 @@
             gap: 12px;
         }
 
-        .sidebar-user img {
+        .sidebar-user img,
+        .sidebar-avatar {
             width: 48px;
             height: 48px;
             border-radius: 50%;
+            object-fit: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            font-size: 20px;
+        }
+
+        .sidebar-user img {
             object-fit: cover;
         }
 
@@ -329,22 +340,24 @@
         <span class="menu-text">Peminjaman</span>
     </a>
 
-    @if($user && $user->role !== 'admin')
+    @if($user)
 
-        <a href="/riwayat" class="menu-link {{ request()->is('riwayat*') ? 'active' : '' }}">
-            <i class="bi bi-clock-history"></i>
-            <span class="menu-text">Riwayat</span>
-        </a>
+        @if($user->role !== 'admin')
+            <a href="/riwayat" class="menu-link {{ request()->is('riwayat*') ? 'active' : '' }}">
+                <i class="bi bi-clock-history"></i>
+                <span class="menu-text">Riwayat</span>
+            </a>
 
-        <a href="/komentar" class="menu-link {{ request()->is('komentar*') ? 'active' : '' }}">
-            <i class="bi bi-chat-dots"></i>
-            <span class="menu-text">Komentar</span>
-        </a>
+            <a href="/komentar" class="menu-link {{ request()->is('komentar*') ? 'active' : '' }}">
+                <i class="bi bi-chat-dots"></i>
+                <span class="menu-text">Komentar</span>
+            </a>
 
-        <a href="/wishlist" class="menu-link {{ request()->is('wishlist*') ? 'active' : '' }}">
-            <i class="bi bi-heart"></i>
-            <span class="menu-text">Wishlist</span>
-        </a>
+            <a href="/wishlist" class="menu-link {{ request()->is('wishlist*') ? 'active' : '' }}">
+                <i class="bi bi-heart"></i>
+                <span class="menu-text">Wishlist</span>
+            </a>
+        @endif
 
         <a href="/profil" class="menu-link {{ request()->is('profil*') ? 'active' : '' }}">
             <i class="bi bi-person"></i>
@@ -382,7 +395,11 @@
         <i class="bi bi-bell fs-5"></i>
 
         <div class="profile-box">
-            <i class="bi bi-person-circle fs-3"></i>
+            @if ($user && !empty($user->foto))
+                <img src="{{ asset('uploads/profiles/' . $user->foto) }}" alt="Foto Profil">
+            @else
+                <i class="bi bi-person-circle fs-3"></i>
+            @endif
 
             <div>
                 <div class="fw-semibold">{{ $user->name ?? 'User' }}</div>

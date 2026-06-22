@@ -22,11 +22,30 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:6',
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
+        ]);
+
+        $fotoName = null;
+        if ($request->hasFile('foto')) {
+            $file = $request->file('foto');
+            $folder = public_path('uploads/profiles');
+            if (!file_exists($folder)) {
+                mkdir($folder, 0755, true);
+            }
+            $fotoName = uniqid('foto_') . '.' . $file->getClientOriginalExtension();
+            $file->move($folder, $fotoName);
+        }
+
         User::insertRaw([
             'name' => $request->name,
             'email' => $request->email,
             'password' => VigenereHelper::encrypt($request->password),
-            'role' => 'user'
+            'role' => 'user',
+            'foto' => $fotoName,
         ]);
 
         return redirect('/user');
@@ -44,10 +63,33 @@ class UserController extends Controller
         $user = User::findRaw($id);
         if (!$user) abort(404);
 
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email,' . $id,
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
+        ]);
+
+        $fotoName = $user->foto;
+        if ($request->hasFile('foto')) {
+            $file = $request->file('foto');
+            $folder = public_path('uploads/profiles');
+            if (!file_exists($folder)) {
+                mkdir($folder, 0755, true);
+            }
+            $newFotoName = uniqid('foto_') . '.' . $file->getClientOriginalExtension();
+            $file->move($folder, $newFotoName);
+
+            if ($fotoName && file_exists($folder . '/' . $fotoName)) {
+                @unlink($folder . '/' . $fotoName);
+            }
+            $fotoName = $newFotoName;
+        }
+
         User::updateRaw($id, [
             'name' => $request->name,
             'email' => $request->email,
-            'role' => $user->role
+            'role' => $user->role,
+            'foto' => $fotoName,
         ]);
 
         if ($request->password) {

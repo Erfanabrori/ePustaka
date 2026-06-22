@@ -89,7 +89,13 @@
         <div class="col-md-4">
             <div class="profil-card text-center">
                 <div class="profil-header">
-                    <div class="avatar-circle"><i class="bi bi-person-circle" style="font-size: 32px;"></i></div>
+                    <div class="avatar-circle">
+                        @if (!empty($user->foto))
+                            <img src="{{ asset('uploads/profiles/' . $user->foto) }}" alt="Foto Profil" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" />
+                        @else
+                            <i class="bi bi-person-circle" style="font-size: 32px;"></i>
+                        @endif
+                    </div>
                     <h4 class="fw-bold">{{ $user->name }}</h4>
                     <span class="badge bg-primary">{{ $user->role }}</span>
                 </div>
@@ -104,20 +110,31 @@
         <!-- Form Ganti Password -->
         <div class="col-md-8">
             <div class="profil-card">
-                <h5 class="fw-bold mb-4"><i class="bi bi-lock-fill" style="margin-right: 8px;"></i>Ganti Password</h5>
+                <h5 class="fw-bold mb-4"><i class="bi bi-person-badge-fill" style="margin-right: 8px;"></i>Perbarui Profil</h5>
 
-                <form method="POST" action="/profil/update">
+                <form method="POST" action="/profil/update" enctype="multipart/form-data">
                     @csrf
+
+                    <label class="info-label">Nama Lengkap</label>
+                    <input type="text" name="name" class="input-modern"
+                           value="{{ $user->name }}" placeholder="Nama lengkap" required>
+
+                    <label class="info-label">Email</label>
+                    <input type="email" name="email" class="input-modern"
+                           value="{{ $user->email }}" placeholder="Email" required>
+
+                    <label class="info-label">Foto Profil</label>
+                    <input type="file" name="foto" class="input-modern" accept="image/*">
 
                     <label class="info-label">Password Baru</label>
                     <input type="password" name="password" class="input-modern"
-                           placeholder="Masukkan password baru" required>
+                           placeholder="Kosongkan jika tidak diubah">
 
                     <label class="info-label">Konfirmasi Password</label>
                     <input type="password" name="password_confirmation" class="input-modern"
-                           placeholder="Konfirmasi password baru" required>
+                           placeholder="Konfirmasi password baru">
 
-                    <button class="btn-primary-custom">Simpan Password</button>
+                    <button class="btn-primary-custom">Simpan Profil</button>
 
                 </form>
             </div>
