@@ -23,7 +23,7 @@ class VigenereHelper
 
             // Ubah ke karakter
             $result .= chr($encrypted);
-        }
+        }csza
 
         // base64 agar aman disimpan di database
         return base64_encode($result);

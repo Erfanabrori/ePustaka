@@ -291,6 +291,10 @@
         </div>
     </div>
 
+    @if ($user)
+
+    @endif
+
     <div class="menu-title">Home</div>
 
     <a href="/dashboard" class="menu-link {{ request()->is('dashboard') ? 'active' : '' }}">
